@@ -1,2 +1,0 @@
-
-#define PEDRA 'P'
