@@ -1,29 +1,36 @@
-#include <stdio.h>
+#include <stdlib.h>
+#include <ncurses.h>
+#include <strings.h>
+#include <unistd.h> /* usleep() */
 
 #include "includes/defines_lolo.h"
-#include "includes/rlutil.h"
-#include "includes/utils.h"
 #include "includes/janelas.h"
+#include "includes/utils.h"
+
+void play() {
+
+    #ifdef DEBUG
+        //printf("DEBUG ON"); // TODO: Criar um lugar na janela que mostre que o debug está ativado
+    #endif
+
+        desenha_janela_titulo(STR_MENU_PRINCIPAL);
+        getchar();
+
+}
 
 int main() {
 
-    hidecursor();
-	saveDefaultColor();
-	
-	setColor(15);
-    cls();
+    /* Começa o curses mode */
+    initscr();
 
-    desenha_janela_titulo("Menu Principal");
-    locate(1, JANELA_MAX_Y);
-    regua80();
-    anykey("\nHit any key to start.\n");
+    /* Esconde o cursor piscante do prompt */
+    curs_set(0);
 
-    desenha_janela_quadro_animado(15,4,30,20);
-    locate(1, JANELA_MAX_Y);
-    anykey("\nHit any key to start.\n");
+    /* */ 
+    play();
+        
+    /* Encerra o curses mode */
+    endwin();
 
-    cls();
-    resetColor();
-	showcursor();
     return 0;
 }

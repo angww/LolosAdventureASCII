@@ -1,4 +1,9 @@
+<<<<<<< Updated upstream
 #pragma once
+=======
+/* FOR DEV */
+#define DEBUG  1
+>>>>>>> Stashed changes
 
 /* JANELAS */ 
 #define JANELA_MAX_X 80
