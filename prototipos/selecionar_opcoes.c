@@ -9,12 +9,12 @@
  *
  * TODO:
  * Transformar em função, com o protótipo:
- *      int func(char **opções, int coord_x_min, int coord_x_max, 
+ *      int func(char **opções, int num_opções,
+ *              int coord_x_min, int coord_x_max, 
  *              int coord_y_min, int coord_x_max);
  *
- * Com o objetivo de poder exibir a lista de caracteres de forma
- * centralizada, tanto verticalmente e horizontalmente, em qualquer parte
- * da tela.
+ * Com o objetivo de exbir n opções de forma centralizada, tanto
+ * verticalmente e horizontalmente, em qualquer parte da tela.
  */
 
 int main(int argc, char **argv) {
