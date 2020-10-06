@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ncurses.h>
-#include <stdio.h>
 
 #define MUDANCA_NENHUMA     0
 #define MUDANCA_INICIO      1
