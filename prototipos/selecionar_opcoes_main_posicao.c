@@ -1,26 +1,20 @@
-#include "../includes/selecionar_opcoes.h"
+#include "../includes/selecionar_opcoes_posicao.h"
+#include <stdlib.h>
 
 /*
- * Funcionamento:
- *      ./selecionar_opcoes 1 2 3 ...
+ * ./seleciona X1 X2 Y1 Y2 str1 str2 ...
+ *
+ * ./seleciona 2 78 7 23 "Novo Jogo" "Carregar Jogo" "Recordes" "Como Jogar" "Creditos" "Sair do Jogo"
  *
  * Dado os argumentos que foram passados ao executar, exibe uma lista com
  * a linha atual destacada.
- *
- * TODO:
- * Transformar em função, com o protótipo:
- *      int func(char **opções, int num_opções,
- *              int coord_x_min, int coord_x_max, 
- *              int coord_y_min, int coord_y_max);
- *
- * Com o objetivo de exbir n opções de forma centralizada, tanto
- * verticalmente e horizontalmente, em qualquer parte da tela.
  */
 
 int main(int argc, char **argv) {
     /* Não há itens a serem exibidos. */
-    if ( argc == 1 ) {
-        printf("Voce deve fornecer argumentos.\n");
+    if ( argc < 6 ) {
+        printf("Voce deve fornecer o tamanho e os argumentos.\n");
+        printf("\t./%s X1 X2 Y1 Y2 ARGS...\n", argv[0]);
         return 1;
     }
 
@@ -46,15 +40,24 @@ int main(int argc, char **argv) {
 
     /* Armazena o endereço do primeiro argumento */
     char **str;
-    str = &argv[1];
+    str = &argv[5];
 
     /* Inicializa a cor que será usada para o highlight. */
     start_color();
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
 
-    opcao = seleciona_opcao(str, argc-1);
+    struct tamanho_grid grid;
+    grid.x[GRID_COMECO] = atoi(argv[1]);
+    grid.x[GRID_FINAL] = atoi(argv[2]);
+    grid.y[GRID_COMECO] = atoi(argv[3]);
+    grid.y[GRID_FINAL] = atoi(argv[4]);
 
-    printw("A opcao selecionada foi: %s\n", argv[opcao+1]);
+    opcao = seleciona_opcao(str, argc-5, grid);
+
+    move(0,0);
+    clear();
+
+    printw("A opcao selecionada foi: %s\n", argv[opcao+5]);
     printw("Pressione ENTER para sair.\n");
 
     refresh();
