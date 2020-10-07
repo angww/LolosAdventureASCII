@@ -18,18 +18,23 @@ compile:
 	@echo "Arquivo executável de saída:  " $(BIN_OUT)
 	$(CC) -o $(BIN_OUT) $(MAIN) $(CFLAGS)
 
+# roda o commando compile antes
 run: compile
 	./$(BIN_OUT)
 
+
+# .PHONY Limita a rodar a rotina clean somente via comando "make clean"
+.PHONY : clean  
+
+# Procura todos os arquivos +100 (executáveis) na raiz e subsdiretórios, exceto no .git e DELETA
 clean:
 	@echo "Removendo arquivos .o & .out"
-	# Procura todos os arquivos +100 (executáveis) na raiz e subsdiretórios, exceto no .git e DELETA
-	find . -perm +100 -type f -not -path "./.git/*" -print -delete
+	find . -perm -u=x -type f -not -path "./.git/*" -print -delete
 	find . -type f -name "*.o" -not -path "./.git/*" -print -delete
 
+# TODO: Caso seja realizado uma rotina de testes, implementar esta função.
 tests:
-	# TODO: Caso seja realizado uma rotina de testes, implementar esta função.
-	@echo "Rodando testes...""
-	@echo "Ainda não implementado"
+	@echo "Rodando testes..."
+	@echo "Ainda não implementado."
 
 
