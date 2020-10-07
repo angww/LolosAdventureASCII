@@ -24,7 +24,8 @@ run: compile
 clean:
 	@echo "Removendo arquivos .o & .out"
 	# Procura todos os arquivos +100 (executáveis) na raiz e subsdiretórios, exceto no .git e DELETA
-	find . -perm +100 -type f -not -path "./.git/*" -delete
+	find . -perm +100 -type f -not -path "./.git/*" -print -delete
+	find . -type f -name "*.o" -not -path "./.git/*" -print -delete
 
 tests:
 	# TODO: Caso seja realizado uma rotina de testes, implementar esta função.
