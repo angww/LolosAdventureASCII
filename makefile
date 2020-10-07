@@ -28,8 +28,9 @@ run: compile
 
 # Procura todos os arquivos +100 (executáveis) na raiz e subsdiretórios, exceto no .git e DELETA
 clean:
-	@echo "Removendo arquivos .o & .out"
+	@echo "Removendo arquivos executáveis +x"
 	find . -perm -u=x -type f -not -path "./.git/*" -print -delete
+	@echo "Removendo arquivos tipo objeto *.o"
 	find . -type f -name "*.o" -not -path "./.git/*" -print -delete
 
 # TODO: Caso seja realizado uma rotina de testes, implementar esta função.
