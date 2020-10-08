@@ -3,9 +3,9 @@
 #include <strings.h>
 #include <unistd.h> /* usleep() */
 
-#include "includes/defines_lolo.h"
-#include "includes/janelas.h"
-#include "includes/utils.h"
+#include "defines_lolo.h"
+#include "janelas.h"
+#include "utils.h"
 
 void play() {
 
