@@ -26,3 +26,35 @@
 #define BAU         'B'
 #define AGUA        'A'
 #define LIVRE       ' '
+
+struct bloco_movel {
+    int pos[2];
+};
+
+struct inimigos {
+    int pos[2];
+    int vivo;
+};
+
+struct coracoes {
+    int pos[2];
+    int coletado;
+};
+
+struct bau {
+    int pos[2];
+    int aberto;
+};
+
+/* Informações do mapa */
+struct mapa {
+    char grid[21][53];
+    int lolo_pos_inicial[2];
+    struct bau bau;
+    int blocos_moveis_num;
+    struct bloco_movel *blocos_moveis;
+    int inimigos_num;
+    struct inimigos *inimigos;
+    int coracoes_num;
+    struct coracoes *coracoes;
+};
