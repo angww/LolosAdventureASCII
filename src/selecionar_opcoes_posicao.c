@@ -1,4 +1,4 @@
-#include "../includes/selecionar_opcoes_posicao.h"
+#include "selecionar_opcoes_posicao.h"
 
 int seleciona_opcao(char **opcoes, int num_opcoes, struct tamanho_grid grid) {
     /* Primeira opção é selecionada por padrão */

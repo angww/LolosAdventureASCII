@@ -1,4 +1,4 @@
-#include "../includes/selecionar_opcoes_posicao.h"
+#include "selecionar_opcoes_posicao.h"
 #include <stdlib.h>
 
 /*
