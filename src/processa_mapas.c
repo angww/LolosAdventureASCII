@@ -1,4 +1,4 @@
-#include "../includes/processa_mapas.h"
+#include "processa_mapas.h"
 
 int processa_mapa(struct mapa *mp, char grid[21][53]) {
     for ( int linha = 0; linha < JANELA_GRID_MAX_Y; linha++ ) {

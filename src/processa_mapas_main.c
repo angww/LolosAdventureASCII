@@ -1,4 +1,4 @@
-#include "../includes/processa_mapas.h"
+#include "processa_mapas.h"
 
 int exibe_informacoes(struct mapa *mp);
 
