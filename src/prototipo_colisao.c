@@ -31,7 +31,7 @@
  * um bloco móvel, vá para uma livre.
  */
 
-char decide_proximo_mov(int *pos, char *tela[14]);
+int decide_proximo_mov(int *pos, char *tela[14]);
 
 int main(void) {
 	char *tela[14] = { "=============\n",
@@ -86,7 +86,7 @@ int main(void) {
 		printw("%c", PERSONAGEM);
 
 		refresh();
-		usleep(500000);
+		usleep(250000);
 	}
 
 	endwin();
@@ -94,46 +94,22 @@ int main(void) {
 	return 0;
 }
 
-char decide_proximo_mov(int *pos, char *tela[14]){
-	/* 
-	 * 0 -> Não se movimenta no eixo x
-	 * 1 -> Move-se para a direita
-	 * 2 -> Move-se para a esquerda
-	 */
-	char x = (rand() % 3);
+int decide_proximo_mov(int *pos, char *tela[14]){
+    char adjacentes[4];
+    adjacentes[0] = tela[pos[0] + 1][pos[1]];
+    adjacentes[1] = tela[pos[0] - 1][pos[1]];
+    adjacentes[2] = tela[pos[0]][pos[1] + 1];
+    adjacentes[3] = tela[pos[0]][pos[1] - 1];
 
-	if ( x == 1 ) {
-		if ( tela[pos[0] + 1][pos[1]] == ' ' ) {
-			return x;
-		}
-	} else if ( x == 2 ) {
-		if ( tela[pos[0] - 1][pos[1]] == ' ' ) {
-			return x;
-		}
-	}
+    int mov = (rand() % 4);
 
-	/*
-	 * No caso de não ser possível a movimentação
-	 * no eixo x, tenta decidir uma movimentação para
-	 * o eixo y, onde:
-	 * 	0 -> Não se movimenta no eixo y
-	 * 	1 -> Move-se para cima
-	 * 	2 -> Move-se para baixo
-	 *
-	 * Soma-se dois para diferenciar do retorno de x.
-	 */	
-	char y = (rand() % 3);
+    while ( adjacentes[mov] != ' ' ) {
+        if ( mov == 3 ) {
+            mov = 0;
+        } else {
+            mov++;
+        }
+    }
 
-	if ( y == 1 ) {
-		if ( tela[pos[0]][pos[1] + 1] == ' ' ) {
-			return y + 2;
-		}
-	} else if ( y == 2 ) {
-		if ( tela[pos[0]][pos[1] - 1] == ' ' ) {
-			return y + 2;
-		}
-	}
-
-	/* Não se move */
-	return 0;
+    return ++mov;
 }
