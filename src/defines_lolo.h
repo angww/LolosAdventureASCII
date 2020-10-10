@@ -2,6 +2,7 @@
 
 /* FOR DEV */
 #define DEBUG  1
+#define DEBUG_FILENAME "log"
 
 /* JANELAS */ 
 #define JANELA_MAX_X 80

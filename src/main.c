@@ -1,36 +1,45 @@
-#include <stdlib.h>
 #include <ncurses.h>
-#include <strings.h>
-#include <unistd.h> /* usleep() */
-
+#include <signal.h>
 #include "defines_lolo.h"
-#include "janelas.h"
-#include "utils.h"
 
-void play() {
+const void handler_segfault(int code);
 
+int main(int argc, char **argv) {
+    /* Abre o arquivo de debug e escreve uma mensagem */
     #ifdef DEBUG
-        //printf("DEBUG ON"); // TODO: Criar um lugar na janela que mostre que o debug está ativado
+        FILE *fp;
+        fp = fopen(DEBUG_FILENAME, "a");
+        fprintf(fp, "Debug ativado.\n");
+        fclose(fp);
     #endif
 
-        desenha_janela_titulo(STR_MENU_PRINCIPAL);
-        getchar();
+    /* Caso ocorra Segmentation Fault, é chamado handler. */
+    signal(SIGSEGV, handler_segfault);
 
-}
-
-int main() {
-
-    /* Começa o curses mode */
+    /* Inicializa a janela */
     initscr();
 
-    /* Esconde o cursor piscante do prompt */
+    /* Configura a entrada */
+    noecho();
     curs_set(0);
+    keypad(stdscr, true);
 
-    /* */ 
-    play();
-        
-    /* Encerra o curses mode */
+    /* Encerra a janela */
     endwin();
 
     return 0;
+}
+
+const void handler_segfault(int code) {
+    #ifdef DEBUG
+        FILE *fp;
+        fp = fopen(DEBUG_FILENAME, "a");
+        fprintf(fp, "Segmentation Fault.\n");
+        fclose(fp);
+    #endif
+
+    /* Usar futuramente para limpar memória alocada */
+    endwin();
+
+    printf("Segmentation Fault\n");
 }
