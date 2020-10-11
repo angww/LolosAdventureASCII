@@ -1,19 +1,38 @@
 #pragma once
 
-/* FOR DEV */
+/*
+ * Permite que DEBUG seja inicializado com qualquer valor na compilição
+ * Exemplo:
+ *      gcc -o main main.c -DDEBUG=0
+ */
+#ifndef DEBUG
 #define DEBUG  1
-#define DEBUG_FILENAME "log"
+#endif
 
-/* JANELAS */ 
+#define ESC 27
+
+/* JANELAS */
 #define JANELA_MAX_X 80
 #define JANELA_MAX_Y 25
 #define JANELA_MSEC_ANIMACAO 10
 
 /* JANELA DO MAPA */
-#define JANELA_GRID_MAX_X 53
-#define JANELA_GRID_MAX_Y 21
+#define JANELA_JOGO_INICIO_X  1
+#define JANELA_JOGO_TAMANHO_X 53
+#define JANELA_JOGO_FINAL_X   JANELA_JOGO_INICIO_X + JANELA_JOGO_TAMANHO_X
+#define JANELA_JOGO_INICIO_Y  1
+#define JANELA_JOGO_FINAL_Y   JANELA_MAX_Y - 1
+#define JANELA_JOGO_TAMANHO_Y JANELA_JOGO_FINAL_Y - JANELA_JOGO_INICIO_Y
 
-/* STRINGS */ 
+/* Informações ao lado do mapa */
+#define JANELA_INFO_INICIO_X  JANELA_JOGO_FINAL_X + 1
+#define JANELA_INFO_TAMANHO_X 23
+#define JANELA_INFO_FINAL_X   JANELA_INFO_INICIO_X + JANELA_INFO_TAMANHO_X
+#define JANELA_INFO_INICIO_Y  1
+#define JANELA_INFO_FINAL_Y   JANELA_MAX_Y - 1
+#define JANELA_INFO_TAMANHO_Y JANELA_INFO_FINAL_Y - JANELA_INFO_INICIO_Y
+
+/* STRINGS */
 #define STR_TITULO              "LoLo's Adventure - ASCII"
 #define STR_MENU_PRINCIPAL      "Menu Principal"
 #define STR_MENU_VOLTAR         "Voltar para o menu"
