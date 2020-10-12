@@ -9,6 +9,7 @@
 #define DEBUG  1
 #endif
 
+/* Código da tecla ESC */
 #define ESC 27
 
 /* JANELAS */
@@ -34,8 +35,6 @@
 
 /* STRINGS */
 #define STR_TITULO              "LoLo's Adventure - ASCII"
-#define STR_MENU_PRINCIPAL      "Menu Principal"
-#define STR_MENU_VOLTAR         "Voltar para o menu"
 
 /* GAME */
 #define LOLO        '@'
