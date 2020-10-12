@@ -3,36 +3,19 @@
 #include <ncurses.h>
 #include <string.h>
 
-#define MUDANCA_NENHUMA     0
-#define MUDANCA_INICIO      1
-#define MUDANCA_BAIXO       2
-#define MUDANCA_CIMA        3
-#define MUDANCA_CICLO_BAIXO 4
-#define MUDANCA_CICLO_CIMA  5
+/* Indica se houve mudança ou não */
+#define MUDANCA_NENHUMA 0
+#define MUDANCA_OPCAO   1
 
-#define GRID_COMECO 0
-#define GRID_FINAL  1
+/* Retorna a opção selecionada ou KEY_RESIZED */
+int seleciona_opcao(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
+    int x_meio);
 
-/* Informação enviada ao seleciona_opcao */
-struct tamanho_grid {
-    /* Ponto onde começa e termina o eixo x do grid */
-    int x[2];
-    /* Ponto onde começa e termina o eixo y do grid */
-    int y[2];
-};
+/* Exibe todos os itens sem highlight */
+void exibe_itens(char **opcoes, int num_opcoes, int y_inicio, int y_delta, int x_meio);
 
-/* Informação enviada para exibe_opcoes */
-struct grid_processado {
-    /* Tamanho da linha */
-    int x_meio;
-    /* Linha em que se deve começar a exibir */
-    int y_inicial;
-    /* Distância entre as linhas */
-    int y_delta;
-    /* Última posição de y */
-    int y_final;
-};
+/* Exibe apenas um item sem highlight */
+void exibe_item(char *opcao, int num, int y_inicio, int y_delta, int x_meio);
 
-struct grid_processado processa_grid(struct tamanho_grid grid, int num_opcoes);
-int seleciona_opcao(char **opcoes, int num_opcoes, struct tamanho_grid grid);
-void exibe_opcoes(char **opcoes, int num_opcoes, int opcao_atual, int mudanca, struct grid_processado grid);
+/* Exibe apenas um item com highlight */
+void exibe_opcao(char *opcao, int opcao_num, int y_inicio, int y_delta, int x_meio);
