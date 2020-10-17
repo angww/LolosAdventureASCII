@@ -64,9 +64,8 @@ int tamanho_valido(void)
      * tamanho da janela
      */
     #ifdef DEBUG
-        char message[DEBUG_MESSAGE_SIZE];
-        snprintf(message, DEBUG_MESSAGE_SIZE, "Janela com tamanho: (%d, %d), valido: %d", max_y, max_x, valido);
-        write_debug_message(message);
+        write_debug_messagef("Janela com tamanho: (%d, %d), valido: %d",
+            max_y, max_x, valido);
     #endif
 
     /* Retorna se a janela tem tamanho válido ou não */
