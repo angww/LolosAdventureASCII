@@ -92,7 +92,8 @@ int seleciona_opcao(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
     return opcao;
 }
 
-void exibe_itens(char **opcoes, int num_opcoes, int y_inicio, int y_delta, int x_meio)
+void exibe_itens(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
+    int x_meio)
 {
     /* Variável auxiliar */
     int x_atual;
@@ -124,7 +125,8 @@ void exibe_item(char *opcao, int num, int y_inicio, int y_delta, int x_meio)
     printw("%s", opcao);
 }
 
-void exibe_opcao(char *opcao, int opcao_num, int y_inicio, int y_delta, int x_meio)
+void exibe_opcao(char *opcao, int opcao_num, int y_inicio, int y_delta,
+    int x_meio)
 {
     int y_opcao;
     int x_opcao;
