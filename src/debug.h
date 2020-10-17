@@ -1,16 +1,19 @@
 #pragma once
 
 #include <stdio.h>
+/* Alocação de memória dinâmica (malloc e free) */
+#include <stdlib.h>
+/* Na mensagem será exibido quando write_debug_message foi chamado */
 #include <time.h>
-
-/* Definido apenas se DEBUG estiver ativo */
+/* Define ..., possibilitando um número arbitrário de argumentos */
+#include <stdarg.h>
 
 /* Arquivo que será salvo toda mensagem de debug */
 #define DEBUG_FILENAME "log"
 /* Formato do tempo */
 #define TIMESTR "%F %T"
-/* Tamanho máximo da mensagem (não da linha) */
-#define DEBUG_MESSAGE_SIZE 80
 
 /* Escreve message no arquivo de debug */
 void write_debug_message(char *message);
+/* Escreve a mensagem formata no arquivo de debug */
+void write_debug_messagef(char *fmessage, ...);

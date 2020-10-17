@@ -46,9 +46,7 @@ int main(int argc, char **argv)
 
         /* Escreve no arquivo de DEBUG a opção selecionada */
         #ifdef DEBUG
-            char message[DEBUG_MESSAGE_SIZE];
-            snprintf(message, DEBUG_MESSAGE_SIZE, "Opcao selecionada: %d", opcao);
-            write_debug_message(message);
+            write_debug_messagef("Opcao selecionada: %d", opcao);
         #endif
 
         /* Incompleto */
