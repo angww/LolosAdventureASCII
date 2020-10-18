@@ -18,6 +18,10 @@ CFLAGS=-lncurses -Wall -DDEBUG=1
 SRC_DIR=./src/
 # Arquivo de saída
 BIN_OUT=lolosgame.out
+# Diretório de saída
+OUT_DIR=bin/
+# Diretório onde está os niveis
+NIVEIS_DIR=niveis/
 # Arquivos fonte
 SRCS=$(wildcard $(SRC_DIR)*.c)
 # Arquivos objeto
@@ -29,14 +33,19 @@ OBJS=$(SRCS:.c=.o)
 
 # Compila, depende de OBJS para compilar
 compile: $(OBJS)
-	@echo "Compilando... "
-	@echo "Arquivo executável de saída:  " $(BIN_OUT)
-	$(CC) -o $(BIN_OUT) $(OBJS) $(CFLAGS)
+	@# Cria pasta necessárias, caso não existam
+	@mkdir -vp $(OUT_DIR)
+	@mkdir -vp $(OUT_DIR)$(NIVEIS_DIR)
+	@# Copia os niveis para o dirétorio desejado
+	@# Recursivo, verboso e sobreescreve caso já exista
+	@cp -rfv $(SRC_DIR)$(NIVEIS_DIR)* $(OUT_DIR)$(NIVEIS_DIR)
+	@# Compila main para o diretório desejado
+	$(CC) $(CFLAGS) -o $(OUT_DIR)$(BIN_OUT) $(OBJS)
 
-# Roda o commando compile antes
-run: compile
-	@echo "Executando ./$(BIN_OUT)"
-	$(BIN_OUT)
+# Se executar o compile, irá copiar todos os arquivos novamente
+run: 
+	@echo "Executando $(OUT_DIR)$(BIN_OUT)"
+	@cd $(OUT_DIR) ; ./$(BIN_OUT)
 
 # Para cada objeto, usa sua fonte
 OBJS: SRCS
