@@ -18,6 +18,8 @@
 #define SAVE_FILE    "saves.lolo"
 #define RECORDS_FILE "records.lolo"
 
+#define SUCCESS 0
+
 /*
 * Permite a leitura, escrita e execução para usuário e grupo, para outros
 * permite a leitura e a execução

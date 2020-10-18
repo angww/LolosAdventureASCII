@@ -6,7 +6,7 @@ int existe_pasta(char *filename)
     DIR *dir;
     dir = opendir(filename);
 
-    int errsv = 0;
+    int errsv = SUCCESS;
 
     /* errsv = errno apenas se houve erro, errno pode conter valor antigo */
     if ( dir == NULL ) {
@@ -20,7 +20,7 @@ int existe_pasta(char *filename)
 
 int cria_pasta(char *filename)
 {
-    int errsv = 0;
+    int errsv = SUCCESS;
     int ret;
 
     /* Tenta criar a pasta */
@@ -41,24 +41,15 @@ int tenta_abrir_ou_criar_pasta(char *filename)
     #endif
 
     /* Verifica se a pasta existe */
-    int ret;
-    ret = existe_pasta(filename);
+    int ret = existe_pasta(filename);
 
     /* Verifica o retorno, se a pasta não existe, tenta criá-la */
     switch ( ret ) {
-        case EACCES:
+        case SUCCESS:
             #ifdef DEBUG
-                write_debug_messagef("Erro: %s: %s", strerror(ret), filename);
+                write_debug_messagef("A pasta %s existe.", filename);
             #endif
 
-            fprintf(stderr, "Erro: %s nao pode ser lido.\n", filename);
-            break;
-        case ENOTDIR:
-            #ifdef DEBUG
-                write_debug_messagef("Erro: %s: %s", strerror(ret), filename);
-            #endif
-
-            fprintf(stderr, "Erro: %s deveria ser uma pasta.\n", filename);
             break;
         case ENOENT:
             #ifdef DEBUG
@@ -70,45 +61,31 @@ int tenta_abrir_ou_criar_pasta(char *filename)
 
             /* Verifica o retorno */
             switch ( ret ) {
-                case EROFS:
-                    #ifdef DEBUG
-                        write_debug_messagef("Erro: %s: %s", strerror(ret),
-                            filename);
-                    #endif
-
-                    fprintf(stderr, "Sistema de arquivos em somente "
-                        "leitura.\n");
-                    break;
-                case ENOSPC:
-                    #ifdef DEBUG
-                        write_debug_messagef("Erro: %s: %s", strerror(ret),
-                            filename);
-                    #endif
-
-                    fprintf(stderr, "Nao ha espaco suficiente para criar "
-                        "arquivos necessarios.\n");
-                    break;
-                case EACCES:
-                    #ifdef DEBUG
-                        write_debug_messagef("Erro: %s: %s", strerror(ret),
-                            filename);
-                    #endif
-
-                    fprintf(stderr, "Criacao de arquivos nao permitida.\n");
-                    break;
-                default:
+                case SUCCESS:
                     #ifdef DEBUG
                         write_debug_messagef("A pasta %s foi criada.", filename);
                     #endif
+
+                    break;
+                default:
+                    #ifdef DEBUG
+                        write_debug_messagef("Erro: %s: %s", strerror(ret),
+                            filename);
+                    #endif
+
+                    fprintf(stderr, "Erro: %s: %s\n", strerror(ret), filename);
+                    break;
                 break;
             }
 
             break;
         default:
             #ifdef DEBUG
-                write_debug_messagef("A pasta %s existe.", filename);
+                write_debug_messagef("Erro: %s: %s", strerror(ret), filename);
             #endif
-        break;
+
+            fprintf(stderr, "Erro: %s: %s\n", strerror(ret), filename);
+            break;
     }
 
     return ret;
