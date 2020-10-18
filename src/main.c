@@ -3,7 +3,7 @@
 #include "defines_lolo.h"
 #include "selecionar_opcoes_posicao.h"
 #include "menus.h"
-// #include "jogo.h"
+#include "arquivos.h"
 
 #ifdef DEBUG
 #include "debug.h"
@@ -13,8 +13,21 @@ int main(int argc, char **argv)
 {
     /* Escreve no arquivo de DEBUG que o debug está ativado */
     #ifdef DEBUG
-        write_debug_message("Debug ativado");
+        write_debug_message("Debug ativado.");
     #endif
+
+    /*
+     * Tenta abrir os diretórios usados pelo jogo, caso não consiga, encerra a
+     * execução
+     */
+    if ( tenta_abrir_ou_criar_pasta(PASTA) ) {
+        #ifdef DEBUG
+            write_debug_messagef("Encerrando o jogo, houve erro ao tentar "
+                "acessar a pasta: %s.", PASTA);
+        #endif
+
+        return 1;
+    }
 
     /* Inicializa a janela */
     initscr();
@@ -64,6 +77,10 @@ int main(int argc, char **argv)
                 break;
         }
     } while ( opcao != MENU_PRINCIPAL_SAIR );
+
+    #ifdef DEBUG
+        write_debug_message("Encerrando o jogo normalmente");
+    #endif
 
     /* Encerra a janela */
     endwin();
