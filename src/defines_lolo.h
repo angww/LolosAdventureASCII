@@ -3,10 +3,10 @@
 /*
  * Permite que DEBUG seja inicializado com qualquer valor na compilição
  * Exemplo:
- *      gcc -o main main.c -DDEBUG=0
+ *      gcc -o main main.c -DDEBUG=1
  */
 #ifndef DEBUG
-#define DEBUG  1
+#define DEBUG 0
 #endif
 
 /* Código da tecla ESC */

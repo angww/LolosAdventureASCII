@@ -13,7 +13,7 @@
 # Compilador
 CC=gcc
 # Flags para o compilador
-CFLAGS=-lncurses -Wall
+CFLAGS=-lncurses -Wall -DDEBUG=1
 # Diretório onde estão os arquivos a serem compilados
 SRC_DIR=./src/
 # Arquivo de saída
