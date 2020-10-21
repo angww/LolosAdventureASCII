@@ -16,16 +16,15 @@ int main(int argc, char **argv)
         write_debug_message("Debug ativado.");
     #endif
 
-    /*
-     * Tenta abrir os diretórios usados pelo jogo, caso não consiga, encerra a
-     * execução
-     */
-    if ( tenta_abrir_ou_criar_pasta(PASTA) ) {
+    /* Vericia se o jogo tem todas os arquivo necessários para executar */
+    int res = verifica_arquivos();
+
+    if ( res ) {
         #ifdef DEBUG
-            write_debug_messagef("Encerrando o jogo, houve erro ao tentar "
-                "acessar a pasta: %s.", PASTA);
+            write_debug_message("Enecerrando o jogo por erro");
         #endif
 
+        printf("Nao foi possivel carregar todos os arquivos necessarios.\n");
         return 1;
     }
 
@@ -64,11 +63,19 @@ int main(int argc, char **argv)
 
         /* Incompleto */
         switch ( opcao ) {
-            case MENU_PRINCIPAL_JOGAR:
+            case CREDITOS:
                 clear();
                 desenha_borda(stdscr);
+                creditos();
 
-                //jogo();
+                clear();
+                break;
+            case RECORDES:
+                clear();
+                desenha_borda(stdscr);
+                recordes();
+
+                clear();
                 break;
             /* Apenas volta para o loop */
             case KEY_RESIZE:

@@ -17,25 +17,6 @@
 #define JANELA_MAX_Y 25
 #define JANELA_MSEC_ANIMACAO 10
 
-/* JANELA DO MAPA */
-#define JANELA_JOGO_INICIO_X  1
-#define JANELA_JOGO_TAMANHO_X 53
-#define JANELA_JOGO_FINAL_X   JANELA_JOGO_INICIO_X + JANELA_JOGO_TAMANHO_X
-#define JANELA_JOGO_INICIO_Y  1
-#define JANELA_JOGO_FINAL_Y   JANELA_MAX_Y - 1
-#define JANELA_JOGO_TAMANHO_Y JANELA_JOGO_FINAL_Y - JANELA_JOGO_INICIO_Y
-
-/* Informações ao lado do mapa */
-#define JANELA_INFO_INICIO_X  JANELA_JOGO_FINAL_X + 1
-#define JANELA_INFO_TAMANHO_X 23
-#define JANELA_INFO_FINAL_X   JANELA_INFO_INICIO_X + JANELA_INFO_TAMANHO_X
-#define JANELA_INFO_INICIO_Y  1
-#define JANELA_INFO_FINAL_Y   JANELA_MAX_Y - 1
-#define JANELA_INFO_TAMANHO_Y JANELA_INFO_FINAL_Y - JANELA_INFO_INICIO_Y
-
-/* STRINGS */
-#define STR_TITULO              "LoLo's Adventure - ASCII"
-
 /* GAME */
 #define LOLO        '@'
 #define BLOCO_FIXO  'P'
@@ -46,22 +27,34 @@
 #define AGUA        'A'
 #define LIVRE       ' '
 
+struct save_game {
+    int totalpts;
+    int fase;
+    int vidas;
+    char nome_jogador[9];
+};
+
+struct posicao {
+    int x;
+    int y;
+};
+
 struct bloco_movel {
-    int pos[2];
+    struct posicao pos;
 };
 
 struct inimigos {
-    int pos[2];
+    struct posicao pos;
     int vivo;
 };
 
 struct coracoes {
-    int pos[2];
+    struct posicao pos;
     int coletado;
 };
 
 struct bau {
-    int pos[2];
+    struct posicao pos;
     int aberto;
 };
 
