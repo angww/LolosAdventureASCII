@@ -2,7 +2,7 @@
 #include "defines_lolo.h"
 #include "janela_tamanho.h"
 
-int seleciona_opcao(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
+int seleciona_opcoes(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
     int x_meio)
 {
     /* Primeira opção é selecionada por padrão */
@@ -83,7 +83,8 @@ int seleciona_opcao(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
      * Para de executar se for apertado ENTER, seta da direita, ESC ou tenha
      * mudado o tamanho da tela
      */
-    } while ( ch != '\n' && ch != KEY_RIGHT && ch != KEY_RESIZE && ch != ESC);
+   } while ( ch != '\n' && ch != KEY_RIGHT && ch != KEY_LEFT &&
+             ch != KEY_RESIZE && ch != ESC);
 
     /*
      * Retorna a opção, a função que chamou o seleciona_opcao deve lidar
@@ -91,6 +92,37 @@ int seleciona_opcao(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
      */
     return opcao;
 }
+
+int seleciona_opcao(char *opcao, int y_pos, int x_meio)
+{
+    int ch = 0;
+
+    /* Exibe a opção com highlight */
+    exibe_opcao_pos(opcao, y_pos, x_meio);
+
+    /* Aplica as mudanças à stdscr */
+    refresh();
+
+    /* Execta o loop até que uma opção seja selecionada */
+    do {
+        /* Recebe a entrada do teclado */
+        ch = wgetch(stdscr);
+
+        /* Não é necessário tratar a opção */
+    /*
+     * Para de executar se for apertado ENTER, seta da direita, ESC ou tenha
+     * mudado o tamanho da tela
+     */
+   } while ( ch != '\n' && ch != KEY_RIGHT && ch != KEY_LEFT &&
+             ch != KEY_RESIZE && ch != ESC);
+
+    /*
+     * Retorna a opção, a função que chamou o seleciona_opcao deve lidar
+     * com cada  caso
+     */
+    return ch;
+}
+
 
 void exibe_itens(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
     int x_meio)
@@ -136,6 +168,20 @@ void exibe_opcao(char *opcao, int opcao_num, int y_inicio, int y_delta,
 
     /* Move o cursor a opção que está selecionada */
     move(y_opcao, x_opcao);
+    /* Inicia a cor do highlight */
+    attron(COLOR_PAIR(1));
+    /* Exibe a opção com o highlight */
+    printw("%s", opcao);
+    /* Volta a cor normal */
+    attroff(COLOR_PAIR(1));
+}
+
+void exibe_opcao_pos(char *opcao, int y_pos, int x_meio)
+{
+    int x_opcao = x_meio - (int)(strlen(opcao) / 2);
+
+    /* Move o cursor a opção que está selecionada */
+    move(y_pos, x_opcao);
     /* Inicia a cor do highlight */
     attron(COLOR_PAIR(1));
     /* Exibe a opção com o highlight */
