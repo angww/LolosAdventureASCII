@@ -42,23 +42,28 @@ int main(int argc, char **argv)
     start_color();
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
 
-    int opcao;
+    /* Se o tamanho da janela não for válido, espera até que seja */
+    if ( !(tamanho_valido())) {
+      espera_tamanho_valido();
+    }
+
+    int opcao = 0;
 
     do {
-        /* Se o tamanho da janela não for válido, espera até que seja */
-        if ( !(tamanho_valido())) {
-          espera_tamanho_valido();
-        }
-
         /* Desenha uma borda na janela principal */
         desenha_borda(stdscr);
 
         /* Obtém a opção selecionada pelo usuário */
         opcao = menu_principal();
 
-        /* Escreve no arquivo de DEBUG a opção selecionada */
+        /*
+         * Escreve no arquivo de DEBUG a opção selecionada, caso não seja
+         * KEY_RESIZE
+         */
         #ifdef DEBUG
-            write_debug_messagef("Opcao selecionada: %d", opcao);
+            if ( opcao != KEY_RESIZE ) {
+              write_debug_messagef("Opcao selecionada: %d", opcao);
+            }
         #endif
 
         /* Incompleto */
@@ -79,6 +84,12 @@ int main(int argc, char **argv)
                 break;
             /* Apenas volta para o loop */
             case KEY_RESIZE:
+                /* Se o tamanho da janela não for válido, espera até que seja */
+                if ( !(tamanho_valido())) {
+                  espera_tamanho_valido();
+                }
+
+                break;
             case ESC:
             default:
                 break;
