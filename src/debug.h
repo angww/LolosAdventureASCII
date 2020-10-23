@@ -9,7 +9,7 @@
 #include <stdarg.h>
 
 /* Arquivo que será salvo toda mensagem de debug */
-#define DEBUG_FILENAME "log"
+#define DEBUG_FILENAME "log_lolo.log"
 /* Formato do tempo */
 #define TIMESTR "%F %T"
 
