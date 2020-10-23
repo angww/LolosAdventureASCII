@@ -11,7 +11,7 @@
 # Documentação oficial do make em https://www.gnu.org/software/make/manual/make.html
 
 # Compilador
-CC=gcc
+CC=clang
 # Flags para o compilador
 CFLAGS=-lncurses -Wall -DDEBUG=1
 # Diretório onde estão os arquivos a serem compilados
