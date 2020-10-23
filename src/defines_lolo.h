@@ -23,50 +23,32 @@
 #define BLOCO_MOVEL 'M'
 #define INIMIGO     'E'
 #define CORACAO     'C'
-#define BAU         'B'
+#define BAU         'T'
 #define AGUA        'A'
 #define LIVRE       ' '
 
-struct save_game {
+struct gravacao {
+    int identificador;
     int totalpts;
-    int fase;
+    int ultimafase;
     int vidas;
     char nome_jogador[9];
 };
 
-struct posicao {
-    int x;
-    int y;
-};
-
-struct bloco_movel {
-    struct posicao pos;
+struct ponto {
+    char x;
+    char y;
 };
 
 struct inimigos {
-    struct posicao pos;
-    int vivo;
-};
-
-struct coracoes {
-    struct posicao pos;
-    int coletado;
-};
-
-struct bau {
-    struct posicao pos;
-    int aberto;
+    struct ponto pos;
 };
 
 /* Informações do mapa */
 struct mapa {
-    char grid[21][53];
-    int lolo_pos_inicial[2];
-    struct bau bau;
-    int blocos_moveis_num;
-    struct bloco_movel *blocos_moveis;
-    int inimigos_num;
-    struct inimigos *inimigos;
-    int coracoes_num;
-    struct coracoes *coracoes;
+    char elementos[21][53];         /* Mapa estático */
+    struct ponto lolo;       /* Onde posicionar Lolo */
+    struct ponto bau;        /* Mudar a cor do baú quando for aberto */
+    int inimigos_num;          /* Controla o loop de movimentação */
+    struct inimigos *inimigos; /* Inimigos serão alocados dinamicamente */
 };

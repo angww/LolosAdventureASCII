@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     noecho();
     curs_set(0);
     raw();
-    halfdelay(10);
+    halfdelay(JANELA_MSEC_ANIMACAO);
     keypad(stdscr, true);
 
     /* Inicializa a cor do highlight */
