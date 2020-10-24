@@ -33,6 +33,8 @@ struct gravacao {
     int ultimafase;
     int vidas;
     char nome_jogador[9];
+    int tempo_total_segundos;
+    int tempo_fase_segundos;
 };
 
 struct ponto {
