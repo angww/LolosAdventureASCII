@@ -68,19 +68,14 @@ int lista_mapas_disponiveis(char ***filenames, int *num_mapa_files, char *path)
     char *filename;
     int num_arquivos;
     int ret;
+    DIR *dp;
+    struct dirent *tmp;
 
-    /*
-     * Lê os nomes dos arquivos da pasta path, salva o resultado em dir_list
-     * em ordem alfabética
-     */
-    num_arquivos = scandir(path, &dir_list, NULL, alphasort);
-    if ( num_arquivos == -1 ) {
-        return errno;
-    }
+    dp = opendir(path);
 
-    for ( int i = 0; i < num_arquivos; i++ ) {
+    while ( (tmp = readdir(dp)) != NULL ) {
         /* Nome do arquivo */
-        filename = dir_list[i]->d_name;
+        filename = tmp->d_name;
 
         /* Se o final da string for ".mapa", é um arquivo de mapa */
         if ( !strcmp(&filename[strlen(filename) - 5], ".mapa") ) {
@@ -90,13 +85,9 @@ int lista_mapas_disponiveis(char ***filenames, int *num_mapa_files, char *path)
               return ret;
             }
         }
-
-        /* Limpa a memória que foi alocada */
-        free(dir_list[i]);
     }
 
-    /* Limpa a memória que foi alocada */
-    free(dir_list);
+    closedir(dp);
 
     return 0;
 }
