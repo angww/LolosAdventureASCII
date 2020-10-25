@@ -10,8 +10,6 @@
 ##
 # Documentação oficial do make em https://www.gnu.org/software/make/manual/make.html
 
-# Compilador
-CC=clang
 # Flags para o compilador
 CFLAGS=-lncurses -Wall -DDEBUG=1
 # Diretório onde estão os arquivos a serem compilados
@@ -43,7 +41,7 @@ compile: $(OBJS)
 	$(CC) $(CFLAGS) -o $(OUT_DIR)$(BIN_OUT) $(OBJS)
 
 # Se executar o compile, irá copiar todos os arquivos novamente
-run: 
+run: compile
 	@echo "Executando $(OUT_DIR)$(BIN_OUT)"
 	@cd $(OUT_DIR) ; ./$(BIN_OUT)
 
