@@ -11,9 +11,8 @@
 #define NOVOJOGO                  0
 #define CARREGARJOGO              1
 #define RECORDES                  2
-#define COMOJOGAR                 3
-#define CREDITOS                  4
-#define MENU_PRINCIPAL_SAIR       5
+#define CREDITOS                  3
+#define MENU_PRINCIPAL_SAIR       4
 
 /* Informações sobre a tela */
 #define MEIO_X 40

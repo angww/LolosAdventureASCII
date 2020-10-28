@@ -3,18 +3,18 @@
 int menu_principal(void)
 {
     /* Opções do menu principal */
-    char *opcoes[] = { "Novo Jogo", "Carregar Jogo", "Recordes", "Como Jogar",
-                       "Creditos", "Sair do Jogo" };
+    char *opcoes[] = { "Novo Jogo", "Carregar Jogo", "Recordes", "Creditos",
+        "Sair do Jogo" };
     int y_delta;
 
     /* Distância no eixo y entre um item e outro */
-    y_delta = distancia_itens(6, FINAL_GRIDY_MENU_PRINCIPAL,
+    y_delta = distancia_itens(5, FINAL_GRIDY_MENU_PRINCIPAL,
         INICIO_GRIDY_MENU_PRINCIPAL);
 
     exibe_item("LoLo's Adventre - ASCII", 0, 5, 0, 40);
 
     /* Retorna a opção selecionada */
-    return seleciona_opcoes(opcoes, 6, INICIO_GRIDY_MENU_PRINCIPAL, y_delta,
+    return seleciona_opcoes(opcoes, 5, INICIO_GRIDY_MENU_PRINCIPAL, y_delta,
         MEIO_X);
 }
 
@@ -25,7 +25,7 @@ int creditos(void)
                          "Andrei Rocha Bereta - 00324442",
                          "Angelo Araujo       - nnnnnnnn"};
     char *opcao = "Voltar ao menu principal";
-    
+
     int y_delta = distancia_itens(4, 23, 2);
     int y_inicio = 2 + (y_delta / 2);
 
@@ -76,7 +76,7 @@ int distancia_itens(int num_opcoes, int final_y, int inicial_y)
         y_delta++;
     }
 
-    /* Se a última opção ultrapassar o grid, devemos diminuir a distância */
+    /* Diminui a distância */
     if ( (y_delta * num_opcoes) >= final_y) {
         y_delta--;
     }
