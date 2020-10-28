@@ -82,6 +82,20 @@ int main(int argc, char **argv)
 
                 clear();
                 break;
+            case NOVOJOGO:
+                clear();
+                desenha_borda(stdscr);
+                novojogo();
+
+                clear();
+                break;
+            case CARREGARJOGO:
+                clear();
+                desenha_borda(stdscr);
+                carregarjogo();
+
+                clear();
+                break;
             /* Apenas volta para o loop */
             case KEY_RESIZE:
                 /* Se o tamanho da janela não for válido, espera até que seja */

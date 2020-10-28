@@ -26,7 +26,7 @@
 #define BAU         'T' /* 01010100 */
 #define AGUA        'A' /* 01000001 */
 #define LIVRE       ' ' /* 00100000 */
-#define MASCARA_INIMIGO 0b00011111
+#define MASCARA_INIMIGO  0b00011111
 
 typedef struct {
     int identificador;
@@ -37,6 +37,11 @@ typedef struct {
     int tempo_total_segundos;
     int tempo_fase_segundos;
 } gravacao_st;
+
+typedef struct {
+    int vidas;
+    ponto_st pos;
+} lolo_st;
 
 typedef struct {
     char x;
