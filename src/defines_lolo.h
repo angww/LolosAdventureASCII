@@ -39,14 +39,14 @@ typedef struct {
 } gravacao_st;
 
 typedef struct {
-    int vidas;
-    ponto_st pos;
-} lolo_st;
-
-typedef struct {
     char x;
     char y;
 } ponto_st;
+
+typedef struct {
+    int vidas;
+    ponto_st pos;
+} lolo_st;
 
 typedef struct {
     ponto_st pos;

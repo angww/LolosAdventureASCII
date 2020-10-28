@@ -41,12 +41,12 @@ ponto_st muda_pos(ponto_st pos, int key)
 int movimenta_lolo(lolo_st *lolo, int key)
 {
     /* Próxima posição de Lolo */
-    ponto_st new_pos = muda_pos(*lolo.pos, key);
+    ponto_st new_pos = muda_pos(lolo->pos, key);
     /* Usado no caso de new_pos ser a posição de um bloco móvel */
     ponto_st bloco_pos;
 
     /* ch -> próxima localicazão, _ch usado caso seja BLOCO_MOVEL */
-    int ch = mvinch(new_pos.y, new_pos.x)
+    int ch = mvinch(new_pos.y, new_pos.x);
     int _ch;
     /* Indica se precisamos mudar a posição de lolo em sua estrutura */
     int movimenta = 0;
@@ -55,7 +55,7 @@ int movimenta_lolo(lolo_st *lolo, int key)
 
     /* Bloco Fixo -> Não se mexe */
     if ( ch == BLOCO_FIXO ) {
-        ret = 1
+        ret = 1;
     /* Se for um Bloco Móvel devemos ver se é válido movê-lo */
     } else if ( ch == BLOCO_MOVEL ) {
         bloco_pos = muda_pos(new_pos, key);
@@ -73,7 +73,7 @@ int movimenta_lolo(lolo_st *lolo, int key)
     /* Lolo foi para álgum lugar que tira vida */
     } else if ( ch == INIMIGO || ch == AGUA ) {
         /* Se tiver vidas o suficente, move-se e perde uma vida */
-        if ( *lolo.vidas > 0 ) {
+        if ( lolo->vidas > 0 ) {
             lolo->vidas--;
             movimenta = 1;
             ret = 2;

@@ -4,6 +4,7 @@
 #include "selecionar_opcoes_posicao.h"
 #include "menus.h"
 #include "arquivos.h"
+#include "jogo.h"
 
 #ifdef DEBUG
 #include "debug.h"
