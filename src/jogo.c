@@ -53,50 +53,57 @@ int movimenta_lolo(lolo_st *lolo, int key)
     /* Valor a ser retornado */
     int ret = 0;
 
-    /* Bloco Fixo -> Não se mexe */
-    if ( ch == BLOCO_FIXO ) {
-        ret = 1;
-    /* Se for um Bloco Móvel devemos ver se é válido movê-lo */
-    } else if ( ch == BLOCO_MOVEL ) {
-        bloco_pos = muda_pos(new_pos, key);
-        _ch = mvinch(bloco_pos.y, bloco_pos.x);
-
-        /* Se a próxima posição for um bloco móvel então é válido */
-        if ( _ch == LIVRE ) {
-            mvaddch(bloco_pos.y, bloco_pos.x, BLOCO_MOVEL);
-            movimenta = 1;
-        /* Se não for não fazemos nada */
-        } else {
-            /* Indica que não houve nenhuma mudança na posição */
+    switch ( ch ) {
+        /* Não se mexe */
+        case BLOCO_FIXO:
             ret = 1;
-        }
-    /* Lolo foi para álgum lugar que tira vida */
-    } else if ( ch == INIMIGO || ch == AGUA ) {
-        /* Se tiver vidas o suficente, move-se e perde uma vida */
-        if ( lolo->vidas > 0 ) {
-            lolo->vidas--;
+            break;
+        /* Verifica se é válido */
+        case BLOCO_MOVEL:
+            bloco_pos = muda_pos(new_pos, key);
+            _ch = mvinch(bloco_pos.y, bloco_pos.x);
+
+            /* Se a próxima posição for um bloco móvel então é válido */
+            if ( _ch == LIVRE ) {
+                mvaddch(bloco_pos.y, bloco_pos.x, BLOCO_MOVEL);
+                movimenta = 1;
+            /* Se não for não fazemos nada */
+            } else {
+                /* Indica que não houve nenhuma mudança na posição */
+                ret = 1;
+            }
+            break;
+        case INIMIGO:
+        case AGUA:
+            /* Se tiver vidas o suficente, move-se e perde uma vida */
+            if ( lolo->vidas > 0 ) {
+                lolo->vidas--;
+                movimenta = 1;
+                ret = 2;
+            /* Se não perdeu */
+            } else {
+                movimenta = 1;
+                ret =  255;
+            }
+            break;
+        /* Se foi uma coração devemos aumentar a vida */
+        case CORACAO:
+            lolo->vidas++;
             movimenta = 1;
-            ret = 2;
-        /* Se não perdeu */
-        } else {
+            ret = 3;
+            break;
+        /*
+        * Se foi o baú nos movemos para ele e verificamos no loop principal se está
+        * aberto
+        */
+        case BAU:
             movimenta = 1;
-            ret =  255;
-        }
-    /* Se foi uma coração devemos aumentar a vida */
-    } else if ( ch == CORACAO ) {
-        lolo->vidas++;
-        movimenta = 1;
-        ret = 3;
-    /*
-     * Se foi o baú nos movemos para ele e verificamos no loop principal se está
-     * aberto
-     */
-    } else if ( ch == BAU ) {
-        ret = 4;
-        movimenta = 1;
-    /* Bloco livre */
-    } else {
-        movimenta = 1;
+            ret = 4;
+            break;
+        /* Bloco Livre */
+        default:
+            movimenta = 1;
+            break;
     }
 
     /* Atualiza a posição de Lolo em sua estrtura */
@@ -137,6 +144,37 @@ int movimenta_inimigo(inimigo_st *inimigo)
     }
 
     /* Posição da primeira posição válida */
+    mov = mov_valida(adjacentes, mov);
+
+    /* Gera 0 até posibilidades -1 */
+    _mov = (rand() % possibilidades);
+
+    /* Vai pelas posições válidas */
+    for ( int i = 0; i < _mov; i++, mov++ ) {
+        mov = mov_valida(adjacentes, mov);
+    }
+
+    /* Desenha espaço livre onde o inimigo estava */
+    mvaddch(inimigo->pos.y, inimigo->pos.x, LIVRE);
+
+    /*
+     * Atualiza a posição do inimigo:
+     *   KEY_UP    -> 259
+     *   KEY_DOWN  -> 258
+     *   KEY_RIGHT -> 261
+     *   KEY_LEFT  -> 260
+     */
+    inimigo->pos = muda_pos(inimigo->pos, mov + KEY_UP);
+
+    /* Desenha o inimigo na nova posição */
+    mvaddch(inimigo->pos.y, inimigo->pos.x, INIMIGO);
+
+    /* Indica que a posição do inimigo mudou */
+    return 1;
+}
+
+int mov_valida(char adjacentes[4], int mov) {
+    /* Soma mov até que adjacentes[mov] seja uma posição válida para o inimigo */
     while ( !(adjacentes[mov] & MASCARA_INIMIGO) ) {
         if ( mov == 3 ) {
             mov = 0;
@@ -145,46 +183,5 @@ int movimenta_inimigo(inimigo_st *inimigo)
         }
     }
 
-    /* Gera 0 até posibilidades -1 */
-    _mov = (rand() % possibilidades);
-
-    /* Vai pelas posições válidas */
-    for ( int i = 0; i < _mov; i++ ) {
-        mov++;
-
-        while ( !(adjacentes[mov] & MASCARA_INIMIGO) ) {
-            if ( mov == 3 ) {
-                mov = 0;
-            } else {
-                mov++;
-            }
-        }
-    }
-
-    /* Desenha espaço livre onde o inimigo estava */
-    mvaddch(inimigo->pos.y, inimigo->pos.x, LIVRE);
-
-    /* Atualiza a posição do inimigo */
-    switch ( mov ) {
-        case 0:
-            inimigo->pos.y++;
-            break;
-        case 1:
-            inimigo->pos.y--;
-            break;
-        case 2:
-            inimigo->pos.x++;
-            break;
-        case 3:
-            inimigo->pos.x--;
-            break;
-        default:
-            break;
-    }
-
-    /* Desenha o inimigo na nova posição */
-    mvaddch(inimigo->pos.y, inimigo->pos.x, INIMIGO);
-
-    /* Indica que a posição do inimigo mudou */
-    return 1;
+    return mov;
 }
