@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 
     if ( res ) {
         #ifdef DEBUG
-            write_debug_message("Enecerrando o jogo por erro");
+            write_debug_message("Encerrando o jogo por erro");
         #endif
 
         printf("Nao foi possivel carregar todos os arquivos necessarios.\n");
@@ -31,6 +31,18 @@ int main(int argc, char **argv)
 
     /* Inicializa a janela */
     initscr();
+
+    if ( !hascolor() ) {
+        #ifdef DEBUG
+            write_debug_message("Erro: O terminal nao suporta cores");
+        #endif
+
+        printf("Seu terminal nao suporta cores.\n");
+        endwin();
+
+        return 2;
+    }
+
 
     /* Configura a entrada */
     noecho();
