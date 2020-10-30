@@ -2,6 +2,7 @@
 
 int verifica_arquivos(void)
 {
+    char *niveis[] = NIVEIS;
     int ret;
 
     /* Pasta necessária */
@@ -16,6 +17,31 @@ int verifica_arquivos(void)
         ret = cria_pasta(PASTA);
         if ( ret ) {
             return 2;
+        }
+    }
+
+    /* Verifica se os níveis estão presentes em niveis/ */
+    for ( int i = 0; i < NUM_NIVEIS; i++ ) {
+        if ( arquivo_existe(niveis[i]) ) {
+            return 3;
+        }
+    }
+
+    /* Verifica se arquivo de save existe */
+    ret = arquivo_existe(PASTA "/" SAVE_FILE);
+    if ( ret ) {
+        ret = cria_arquivo(PASTA "/" SAVE_FILE);
+        if ( ret ) {
+            return 4;
+        }
+    }
+
+    /* Verifica se arquivo de save existe */
+    ret = arquivo_existe(PASTA "/" RECORDS_FILE);
+    if ( ret ) {
+        ret = cria_arquivo(PASTA "/" RECORDS_FILE);
+        if ( ret ) {
+            return 5;
         }
     }
 

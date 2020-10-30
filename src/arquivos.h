@@ -27,6 +27,13 @@
  */
 #define PERMISSOES S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
 
+#define NIVEIS { NIVEIS_PASTA "/nivel1.mapa",\
+                NIVEIS_PASTA "/nivel2.mapa",\
+                NIVEIS_PASTA "/nivel3.mapa",\
+                NIVEIS_PASTA "/nivel4.mapa" }
+
+#define NUM_NIVEIS 4
+
 /* Verifica se determinado arquivo ou pasta existe */
 int arquivo_existe(char *filename);
 /* Verifica se podemos ler e escrever o arquivo */

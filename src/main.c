@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     /* Inicializa a janela */
     initscr();
 
-    if ( !hascolor() ) {
+    if ( !has_colors() ) {
         #ifdef DEBUG
             write_debug_message("Erro: O terminal nao suporta cores");
         #endif
