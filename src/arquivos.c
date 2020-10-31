@@ -34,6 +34,16 @@ int verifica_arquivos(void)
         if ( ret ) {
             return 4;
         }
+
+        gravacao_st tmp_gravacao[5];
+        for ( int i = 0; i < 5; i++ ) {
+            limpa_save(&tmp_gravacao[i]);
+        }
+
+        ret = escreve_arquivo(tmp_gravacao, sizeof (gravacao_st), 5, PASTA "/" SAVE_FILE);
+        if ( ret ) {
+            return 5;
+        }
     }
 
     /* Verifica se arquivo de save existe */
@@ -41,11 +51,124 @@ int verifica_arquivos(void)
     if ( ret ) {
         ret = cria_arquivo(PASTA "/" RECORDS_FILE);
         if ( ret ) {
-            return 5;
+            return 6;
         }
+
+        recorde_st tmp_recorde[5];
+        for ( int i = 0; i < 5; i++ ) {
+            limpa_record(&tmp_recorde[i]);
+        }
+
+        ret = escreve_arquivo(tmp_recorde, sizeof (recorde_st), 5, PASTA "/" RECORDS_FILE);
+        if ( ret ) {
+            return 7;
+        }
+
     }
 
     return ret;
+}
+
+int le_arquivo(void *ptr, size_t size, int nmemb, char *filename)
+{
+    int errsv = SUCCESS;
+    FILE *fp;
+
+    fp = fopen(filename, "rb");
+    if ( fp == NULL ) {
+        errsv = errno;
+
+        #ifdef DEBUG
+            write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+        #endif
+
+        return errsv;
+    }
+
+    if ( fread(ptr, size, nmemb, fp) != nmemb ) {
+        errsv = errno;
+
+        #ifdef DEBUG
+            /* Erro na leitura ou não leu tudo */
+            if ( errsv != SUCCESS ) {
+                write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+            } else {
+                write_debug_messagef("Erro: Nao foi possivel ler todo arquivo: %s", filename);
+            }
+        #endif
+
+        /*
+         * Se foi possível escrever, pelo menos uma parte do arquivo, errsv não é
+         * modificado, -1 é um código inexistente, Unknown Error
+         */
+        if ( errsv == SUCCESS) {
+            errsv = -1;
+        }
+
+        return tenta_fechar(fp, filename, errsv);
+    }
+
+    return tenta_fechar(fp, filename, errsv);
+}
+
+int escreve_arquivo(void *ptr, size_t size, int nmemb, char *filename)
+{
+    int errsv = SUCCESS;
+    FILE *fp;
+
+    fp = fopen(filename, "wb");
+    if ( fp == NULL ) {
+        errsv = errno;
+
+        #ifdef DEBUG
+            write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+        #endif
+
+        return errsv;
+    }
+
+    if ( fwrite(ptr, size, nmemb, fp) != nmemb ) {
+        errsv = errno;
+
+        #ifdef DEBUG
+            /* Erro na leitura ou não leu tudo */
+            if ( errsv != SUCCESS ) {
+                write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+            } else {
+                write_debug_messagef("Erro: Nao foi possivel escrever todo arquivo: %s", filename);
+            }
+        #endif
+
+        /*
+         * Se foi possível ler, pelo menos uma parte do arquivo, errsv não é
+         * modificado, -1 é um código inexistente, Unknown Error
+         */
+        if ( errsv == SUCCESS) {
+            errsv = -1;
+        }
+
+        return tenta_fechar(fp, filename, errsv);
+    }
+
+    return tenta_fechar(fp, filename, errsv);
+}
+
+int tenta_fechar(FILE *fp, char *filename, int errsv)
+{
+    if ( errsv ) {
+        #ifdef DEBUG
+            write_debug_messagef("Erro: %s: %s", strerror(errsv), filename);
+        #endif
+    }
+
+    if ( fclose(fp) != 0 ) {
+        errsv = errno;
+        #ifdef DEBUG
+            write_debug_messagef("Erro: %s: %s", strerror(errsv), filename);
+        #endif
+    }
+
+    return errsv;
 }
 
 int arquivo_existe(char *filename)

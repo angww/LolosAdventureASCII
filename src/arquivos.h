@@ -1,5 +1,7 @@
 #pragma once
 
+#include "defines_lolo.h"
+#include "dados.h"
 #include <stdio.h>
 #include <errno.h>     /* Códigos de erro */
 #include <string.h>    /* strerror */
@@ -34,6 +36,21 @@
 
 #define NUM_NIVEIS 4
 
+/*
+ * Tenta fechar o arquivo dado por fp, filename e errsv é usado para exibir
+ * possíveis erros
+ */
+int tenta_fechar(FILE *fp, char *filename, int errsv);
+/*
+ * Mesma funcionalidade do fread, só que ao invés de tratar um FILE *fp, recebe
+ * o nome do arquivo
+ */
+int le_arquivo(void *ptr, size_t size, int nmemb, char *filename);
+/*
+ * Mesma funcionalidade do fwrite, só que ao invés de tratar um FILE *fp, recebe
+ * o nome do arquivo
+ */
+int escreve_arquivo(void *ptr, size_t size, int nmemb, char *filename);
 /* Verifica se determinado arquivo ou pasta existe */
 int arquivo_existe(char *filename);
 /* Verifica se podemos ler e escrever o arquivo */

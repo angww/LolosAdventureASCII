@@ -17,7 +17,7 @@ int main(int argc, char **argv)
         write_debug_message("Debug ativado.");
     #endif
 
-    /* Vericia se o jogo tem todas os arquivo necessários para executar */
+    /* Verifica se o jogo tem todas os arquivo necessários para executar */
     int res = verifica_arquivos();
 
     if ( res ) {

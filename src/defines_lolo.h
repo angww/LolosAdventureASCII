@@ -39,6 +39,12 @@ typedef struct {
 } gravacao_st;
 
 typedef struct {
+    char nome_jogador[9];
+    int totalpts;
+    int tempo_total_segundos;
+} recorde_st;
+
+typedef struct {
     char x;
     char y;
 } ponto_st;
