@@ -5,6 +5,7 @@
 #include "menus.h"
 #include "arquivos.h"
 #include "jogo.h"
+#include "cores.h"
 
 #ifdef DEBUG
 #include "debug.h"
@@ -51,9 +52,7 @@ int main(int argc, char **argv)
     halfdelay(JANELA_MSEC_ANIMACAO);
     keypad(stdscr, true);
 
-    /* Inicializa a cor do highlight */
-    start_color();
-    init_pair(1, COLOR_BLACK, COLOR_WHITE);
+    inicializa_cores();
 
     /* Se o tamanho da janela não for válido, espera até que seja */
     if ( !(tamanho_valido())) {

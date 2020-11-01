@@ -15,6 +15,16 @@ int loop_jogo(mapa_st mapa)
     return 0;
 }
 
+void exibe_grid(char grid[21][53])
+{
+    for ( int l = 0; l < 21; l++ ){
+        move(l, 1);
+        for ( int c = 0; c < 53; c++ ) {
+            exibe_caractere_jogo(grid[l][c], l+1, c+1);
+        }
+    }
+}
+
 ponto_st muda_pos(ponto_st pos, int key)
 {
     /* Dependendo da tecla muda a posição */

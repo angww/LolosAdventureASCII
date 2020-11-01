@@ -15,9 +15,9 @@ void espera_tamanho_valido(void)
     move(0, 0);
 
     /* Exibe o aviso para redimensionar a janela */
-    attron(COLOR_PAIR(1));
+    attron(COLOR_PAIR(HIGHLIGHT));
     printw("Tamanho inferior ao desejado(%d %d).\n", JANELA_MAX_Y, JANELA_MAX_X);
-    attroff(COLOR_PAIR(1));
+    attroff(COLOR_PAIR(HIGHLIGHT));
 
     do {
         ch = getch();
@@ -36,14 +36,6 @@ void espera_tamanho_valido(void)
      * reimprimir seu conteúdo
      */
     clear();
-}
-
-void desenha_borda(WINDOW *win)
-{
-    /* Inicializa highlight e desenha a borda padrão */
-    attron(COLOR_PAIR(1));
-    wborder(win, 0,0,0,0,0,0,0,0);
-    attroff(COLOR_PAIR(1));
 }
 
 int tamanho_valido(void)

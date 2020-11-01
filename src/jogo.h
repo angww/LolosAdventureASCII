@@ -1,7 +1,11 @@
+#pragma once
+
 #include "defines_lolo.h"
+#include "cores.h"
 #include <stdlib.h>
 #include <ncurses.h>
 
+void exibe_grid(char grid[21][53]);
 /* Movimenta o inimigo na tela, retorna 0 se não se moveu */
 int movimenta_inimigo(inimigo_st *inimigo);
 /* Abre um novo jogo */

@@ -169,11 +169,11 @@ void exibe_opcao(char *opcao, int opcao_num, int y_inicio, int y_delta,
     /* Move o cursor a opção que está selecionada */
     move(y_opcao, x_opcao);
     /* Inicia a cor do highlight */
-    attron(COLOR_PAIR(1));
+    attron(COLOR_PAIR(HIGHLIGHT));
     /* Exibe a opção com o highlight */
     printw("%s", opcao);
     /* Volta a cor normal */
-    attroff(COLOR_PAIR(1));
+    attroff(COLOR_PAIR(HIGHLIGHT));
 }
 
 void exibe_opcao_pos(char *opcao, int y_pos, int x_meio)
@@ -183,9 +183,9 @@ void exibe_opcao_pos(char *opcao, int y_pos, int x_meio)
     /* Move o cursor a opção que está selecionada */
     move(y_pos, x_opcao);
     /* Inicia a cor do highlight */
-    attron(COLOR_PAIR(1));
+    attron(COLOR_PAIR(HIGHLIGHT));
     /* Exibe a opção com o highlight */
     printw("%s", opcao);
     /* Volta a cor normal */
-    attroff(COLOR_PAIR(1));
+    attroff(COLOR_PAIR(HIGHLIGHT));
 }
