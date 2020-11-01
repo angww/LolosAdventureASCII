@@ -11,19 +11,19 @@ int verifica_arquivos(void)
         return 1;
     }
 
+    /* Verifica se os níveis estão presentes em niveis/ */
+    for ( int i = 0; i < NUM_NIVEIS; i++ ) {
+        if ( arquivo_existe(niveis[i]) ) {
+            return 3;
+        }
+    }
+
     /* Se não existe pode ser criada */
     ret = arquivo_existe(PASTA);
     if ( ret ) {
         ret = cria_pasta(PASTA);
         if ( ret ) {
             return 2;
-        }
-    }
-
-    /* Verifica se os níveis estão presentes em niveis/ */
-    for ( int i = 0; i < NUM_NIVEIS; i++ ) {
-        if ( arquivo_existe(niveis[i]) ) {
-            return 3;
         }
     }
 
@@ -79,7 +79,7 @@ int le_arquivo(void *ptr, size_t size, int nmemb, char *filename)
         errsv = errno;
 
         #ifdef DEBUG
-            write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+            debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
 
         return errsv;
@@ -91,9 +91,9 @@ int le_arquivo(void *ptr, size_t size, int nmemb, char *filename)
         #ifdef DEBUG
             /* Erro na leitura ou não leu tudo */
             if ( errsv != SUCCESS ) {
-                write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+                debug_message("Erro: %s: %s", strerror(errno), filename);
             } else {
-                write_debug_messagef("Erro: Nao foi possivel ler todo arquivo: %s", filename);
+                debug_message("Erro: Nao foi possivel ler todo arquivo: %s", filename);
             }
         #endif
 
@@ -121,7 +121,7 @@ int escreve_arquivo(void *ptr, size_t size, int nmemb, char *filename)
         errsv = errno;
 
         #ifdef DEBUG
-            write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+            debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
 
         return errsv;
@@ -133,9 +133,9 @@ int escreve_arquivo(void *ptr, size_t size, int nmemb, char *filename)
         #ifdef DEBUG
             /* Erro na leitura ou não leu tudo */
             if ( errsv != SUCCESS ) {
-                write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+                debug_message("Erro: %s: %s", strerror(errno), filename);
             } else {
-                write_debug_messagef("Erro: Nao foi possivel escrever todo arquivo: %s", filename);
+                debug_message("Erro: Nao foi possivel escrever todo arquivo: %s", filename);
             }
         #endif
 
@@ -157,14 +157,14 @@ int tenta_fechar(FILE *fp, char *filename, int errsv)
 {
     if ( errsv ) {
         #ifdef DEBUG
-            write_debug_messagef("Erro: %s: %s", strerror(errsv), filename);
+            debug_message("Erro: %s: %s", strerror(errsv), filename);
         #endif
     }
 
     if ( fclose(fp) != 0 ) {
         errsv = errno;
         #ifdef DEBUG
-            write_debug_messagef("Erro: %s: %s", strerror(errsv), filename);
+            debug_message("Erro: %s: %s", strerror(errsv), filename);
         #endif
     }
 
@@ -182,11 +182,11 @@ int arquivo_existe(char *filename)
         errsv = errno;
 
         #ifdef DEBUG
-            write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+            debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
     } else {
         #ifdef DEBUG
-            write_debug_messagef("Arquivo %s existe", filename);
+            debug_message("Arquivo %s existe", filename);
         #endif
     }
 
@@ -204,11 +204,11 @@ int arquivo_acessivel(char *filename)
         errsv = errno;
 
         #ifdef DEBUG
-            write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+            debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
     } else {
         #ifdef DEBUG
-            write_debug_messagef("Arquivo %s acessivel", filename);
+            debug_message("Arquivo %s acessivel", filename);
         #endif
     }
 
@@ -223,7 +223,7 @@ int cria_arquivo(char *filename)
     mode_t mode = PERMISSOES;
 
     #ifdef DEBUG
-        write_debug_messagef("Criando arquivo %s", filename);
+        debug_message("Criando arquivo %s", filename);
     #endif
 
     fd = open(filename, O_WRONLY | O_CREAT , mode);
@@ -232,7 +232,7 @@ int cria_arquivo(char *filename)
         errsv = errno;
 
         #ifdef DEBUG
-            write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+            debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
     } else {
         close(fd);
@@ -247,7 +247,7 @@ int cria_pasta(char *filename)
     int ret;
 
     #ifdef DEBUG
-        write_debug_messagef("Criando pasta %s", filename);
+        debug_message("Criando pasta %s", filename);
     #endif
 
     /* Tenta criar a pasta */
@@ -258,7 +258,7 @@ int cria_pasta(char *filename)
         errsv = errno;
 
         #ifdef DEBUG
-            write_debug_messagef("Erro: %s: %s", strerror(errno), filename);
+            debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
     }
 

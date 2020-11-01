@@ -13,7 +13,5 @@
 /* Formato do tempo */
 #define TIMESTR "%F %T"
 
-/* Escreve message no arquivo de debug */
-void write_debug_message(char *message);
 /* Escreve a mensagem formata no arquivo de debug */
-void write_debug_messagef(char *fmessage, ...);
+void debug_message(char *fmessage, ...);

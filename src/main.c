@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 {
     /* Escreve no arquivo de DEBUG que o debug está ativado */
     #ifdef DEBUG
-        write_debug_message("Debug ativado.");
+        debug_message("Debug ativado.");
     #endif
 
     /* Verifica se o jogo tem todas os arquivo necessários para executar */
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 
     if ( res ) {
         #ifdef DEBUG
-            write_debug_message("Encerrando o jogo por erro");
+            debug_message("Encerrando o jogo por erro");
         #endif
 
         printf("Nao foi possivel carregar todos os arquivos necessarios.\n");
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 
     if ( !has_colors() || !can_change_color() ) {
         #ifdef DEBUG
-            write_debug_message("Erro: O terminal nao suporta cores");
+            debug_message("Erro: O terminal nao suporta cores");
         #endif
 
         printf("Seu terminal nao suporta cores.\n");
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
          */
         #ifdef DEBUG
             if ( opcao != KEY_RESIZE ) {
-              write_debug_messagef("Opcao selecionada: %d", opcao);
+              debug_message("Opcao selecionada: %d", opcao);
             }
         #endif
 
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
     } while ( opcao != MENU_PRINCIPAL_SAIR );
 
     #ifdef DEBUG
-        write_debug_message("Encerrando o jogo normalmente");
+        debug_message("Encerrando o jogo normalmente");
     #endif
 
     /* Encerra a janela */

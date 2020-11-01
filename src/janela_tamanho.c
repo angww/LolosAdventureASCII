@@ -64,7 +64,7 @@ int tamanho_valido(void)
      * tamanho da janela
      */
     #ifdef DEBUG
-        write_debug_messagef("Janela com tamanho: (%d, %d), valido: %d",
+        debug_message("Janela com tamanho: (%d, %d), valido: %d",
             max_y, max_x, valido);
     #endif
 
