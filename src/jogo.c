@@ -33,6 +33,8 @@ int joga_mapas(gravacao_st *gravacao)
 {
     char *niveis[] = NIVEIS;
     mapa_st mapa;
+    mapa.inimigos = NULL;
+    mapa.inimigos_num = 0;
     int ret;
 
     /* Execta até chegar no último arquivo, jogador perder ou voltar ao menu */
@@ -67,8 +69,8 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 
     /* Carrega as informações do último nível e a posição atual */
     lolo.vidas = gravacao->vidas;
-    lolo.pos.y = mapa->lolo.y+1;
-    lolo.pos.x = mapa->lolo.x+1;
+    lolo.pos.y = mapa->lolo.y;
+    lolo.pos.x = mapa->lolo.x;
     lolo.pontos = gravacao->totalpts;
 
     /* Exibe todo o mapa */
@@ -91,36 +93,53 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
         /* Descarta o resto da entrada */
         flushinp();
 
-        ret = movimenta_lolo(&lolo, ch);
+        switch ( ch ){
+            /* Chama movimenta_lolo apenas se for uma tecla de movimentação */
+            case KEY_UP:
+            case KEY_DOWN:
+            case KEY_RIGHT:
+            case KEY_LEFT:
+                ret = movimenta_lolo(&lolo, ch);
 
-        /* Atualiza informações conforme a Movimentação do Lolo */
-        switch ( ret ) {
-            case 2:
-            case 3:
-            case 4:
-            case 255:
-                /* Atualiza a vida */
-                snprintf(buf, 19, "Vidas: %d", lolo.vidas);
-                exibe_item(buf, 1, y_inicio_info, y_delta_info, 55+2+11);
+                /* Atualiza informações conforme a Movimentação do Lolo */
+                switch ( ret ) {
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 255:
+                        /* Atualiza a vida */
+                        snprintf(buf, 19, "Vidas: %d", lolo.vidas);
+                        exibe_item(buf, 1, y_inicio_info, y_delta_info, 55+2+11);
 
-                /* Não tem mais vidas */
-                if ( ret == 255 ) {
-                    ch = 's';
-                /* Matou um inimigo */
-                } else if ( ret == 2 ) {
-                    mapa->inimigos_num--;
-                    snprintf(buf, 19, "inimigos: %d", mapa->inimigos_num);
-                    exibe_item(buf, 2, y_inicio_info, y_delta_info, 55+2+11);
-                /* Pegou um coração */
-                } else if ( ret == 4 ) {
-                      mapa->coracoes_num--;
-                      snprintf(buf, 19, "Coracoes: %d", mapa->coracoes_num);
-                      exibe_item(buf, 3, y_inicio_info, y_delta_info, 55+2+11);
+                        /* Não tem mais vidas */
+                        if ( ret == 255 ) {
+                            /* TODO: Mostrar menu */
+                            ch = 's';
+                        /* Matou um inimigo */
+                        } else if ( ret == 2 ) {
+                            /* TODO: Adicionar verificação */
+                            limpa_inimigo_pos(&(mapa->inimigos), &(mapa->inimigos_num),
+                                lolo.pos.y, lolo.pos.x);
+                            snprintf(buf, 19, "inimigos: %d", mapa->inimigos_num);
+                            exibe_item(buf, 2, y_inicio_info, y_delta_info, 55+2+11);
+                        /* Pegou um coração */
+                        } else if ( ret == 4 ) {
+                            mapa->coracoes_num--;
+                            snprintf(buf, 19, "Coracoes: %d", mapa->coracoes_num);
+                            exibe_item(buf, 3, y_inicio_info, y_delta_info, 55+2+11);
+                        }
+
+                        break;
+                    default:
+                        break;
                 }
-
-                break;
             default:
                 break;
+        }
+
+        /* Movimenta os inimigos que estão vivos */
+        for ( int i = 0; i < mapa->inimigos_num; i++ ) {
+            movimenta_inimigo((mapa->inimigos)[i]);
         }
 
         /* Atualiza o tempo */
@@ -130,6 +149,10 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 
         refresh();
     } while ( ch != 's' );
+
+    /* Limpa os inimigos remanescentes */
+    limpa_inimigos(&(mapa->inimigos), mapa->inimigos_num);
+    mapa->inimigos_num = 0;
 
     /* Atualiza os dados, TODO: não atualizar se usuário deseja salvar */
     gravacao->vidas = lolo.vidas;
@@ -152,17 +175,21 @@ void exibe_grid(char grid[JOGO_JANELA_Y][JOGO_JANELA_X])
 
 ponto_st muda_pos(ponto_st pos, int key)
 {
-    /* Dependendo da tecla muda a posição */
     switch ( key ) {
+        /* Lolo e inimigo */
+        case 0:
         case KEY_UP:
             pos.y--;
             break;
+        case 1:
         case KEY_DOWN:
             pos.y++;
             break;
+        case 2:
         case KEY_RIGHT:
             pos.x++;
             break;
+        case 3:
         case KEY_LEFT:
             pos.x--;
             break;
@@ -262,10 +289,10 @@ int movimenta_inimigo(inimigo_st *inimigo)
     int possibilidades = 0;
 
     /* Salva as posições adjacentes ao inimigo */
-    adjacentes[0] = mvinch(inimigo->pos.y - 1, inimigo->pos.x);
-    adjacentes[1] = mvinch(inimigo->pos.y + 1, inimigo->pos.x);
-    adjacentes[2] = mvinch(inimigo->pos.y, inimigo->pos.x + 1);
-    adjacentes[3] = mvinch(inimigo->pos.y, inimigo->pos.x - 1);
+    adjacentes[0] = mvinch(inimigo->pos.y - 1, inimigo->pos.x) & A_CHARTEXT;
+    adjacentes[1] = mvinch(inimigo->pos.y + 1, inimigo->pos.x) & A_CHARTEXT;
+    adjacentes[2] = mvinch(inimigo->pos.y, inimigo->pos.x + 1) & A_CHARTEXT;
+    adjacentes[3] = mvinch(inimigo->pos.y, inimigo->pos.x - 1) & A_CHARTEXT;
 
     /* Verifica quantas posições válidas existem */
     for ( int i = 0; i < 4; i++ ) {
@@ -279,28 +306,19 @@ int movimenta_inimigo(inimigo_st *inimigo)
         return 0;
     }
 
-    /* Posição da primeira posição válida */
-    mov = mov_valida(adjacentes, mov);
-
     /* Gera 0 até posibilidades -1 */
     _mov = (rand() % possibilidades);
 
     /* Vai pelas posições válidas */
-    for ( int i = 0; i < _mov; i++, mov++ ) {
-        mov = mov_valida(adjacentes, mov);
+    for ( int i = 0; i < _mov + 1; i++ ) {
+        mov = prox_mov(adjacentes, mov);
     }
 
     /* Desenha espaço livre onde o inimigo estava */
     exibe_caractere_jogo(LIVRE, inimigo->pos.y, inimigo->pos.x);
 
-    /*
-     * Atualiza a posição do inimigo:
-     *   KEY_UP    -> 259
-     *   KEY_DOWN  -> 258
-     *   KEY_RIGHT -> 261
-     *   KEY_LEFT  -> 260
-     */
-    inimigo->pos = muda_pos(inimigo->pos, mov + KEY_UP);
+    /* Atualiza a posição do inimigo */
+    inimigo->pos = muda_pos(inimigo->pos, mov);
 
     /* Desenha o inimigo na nova posição */
     exibe_caractere_jogo(INIMIGO, inimigo->pos.y, inimigo->pos.x);
@@ -309,15 +327,15 @@ int movimenta_inimigo(inimigo_st *inimigo)
     return 1;
 }
 
-int mov_valida(char adjacentes[4], int mov) {
+int prox_mov(char adjacentes[4], int mov) {
     /* Soma mov até que adjacentes[mov] seja uma posição válida para o inimigo */
-    while ( !(adjacentes[mov] & MASCARA_INIMIGO) ) {
+    do {
         if ( mov == 3 ) {
             mov = 0;
         } else {
             mov++;
         }
-    }
+    } while ( adjacentes[mov] & MASCARA_INIMIGO );
 
     return mov;
 }

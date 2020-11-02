@@ -40,4 +40,4 @@ ponto_st muda_pos(ponto_st pos, int key);
  */
 int movimenta_lolo(lolo_st *lolo, int key);
 /* Retorna mov em um posição adjacente válida */
-int mov_valida(char adjacentes[4], int mov);
+int prox_mov(char adjacentes[4], int mov);
