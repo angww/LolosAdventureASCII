@@ -49,9 +49,10 @@ void exibe_caractere_jogo(char ch, int y, int x)
 
 void exibe_caractere_colorido(char ch, short cor)
 {
+    /* Escreve apenas o caractere com cor */
     attron(COLOR_PAIR(cor));
     addch(ch);
-    attron(COLOR_PAIR(cor));
+    attroff(COLOR_PAIR(cor));
 }
 
 void desenha_borda(WINDOW *win)

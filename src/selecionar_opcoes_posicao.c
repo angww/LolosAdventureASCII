@@ -123,7 +123,6 @@ int seleciona_opcao(char *opcao, int y_pos, int x_meio)
     return ch;
 }
 
-
 void exibe_itens(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
     int x_meio)
 {
@@ -132,11 +131,9 @@ void exibe_itens(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
 
     /* Exibe da primeira até a última opção */
     for ( int i = 0, y = y_inicio; i < num_opcoes; i++, y += y_delta ) {
-          /* Calcula o ponto X onde deverá escrever e move o cursor */
+          /* Calcula o ponto X onde deverá escrever */
           x_atual = x_meio - (int)(strlen(opcoes[i]) / 2);
-          move(y, x_atual);
-
-          printw("%s", opcoes[i]);
+          mvprintw(y, x_atual, "%s", opcoes[i]);
     }
 }
 
