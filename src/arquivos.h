@@ -36,6 +36,8 @@
 
 #define NUM_NIVEIS 4
 
+/* Carrega um mapa determinado por filename */
+int carrega_arquivo_mapa(mapa_st *mapa, char *filename);
 /*
  * Tenta fechar o arquivo dado por fp, filename e errsv é usado para exibir
  * possíveis erros
