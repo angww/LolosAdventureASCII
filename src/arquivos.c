@@ -4,12 +4,7 @@ int carrega_arquivo_mapa(mapa_st *mapa, char *filename)
 {
     /* TODO: ler o arquivo direto em mapa->elementos */
 
-    if ( processa_mapa(mapa) != 0 ) {
-        return 1;
-    }
-
-    /* Se conseguiu ler e processar o mapa */
-    return 0;
+    return processa_mapa(mapa);
 }
 
 int verifica_arquivos(void)

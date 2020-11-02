@@ -91,35 +91,140 @@ int processa_mapa(mapa_st *mapa)
         }
     }
 
+    int ret = 0;
+
     /* Limpa o lixo */
-    mapa->inimigos = NULL;
     mapa->coracoes_num = 0;
-    mapa->inimigos_num = 0;
 
     /* Percorre o mapa */
     for ( int l = 0; l < JOGO_JANELA_Y; l++ ) {
         for ( int c = 0; c < JOGO_JANELA_X; c++ ) {
+            /* l+1 e c+1 serão as posições na tela */
             switch ( tmp[l][c] ) {
                 case CORACAO:
                     mapa->coracoes_num++;
                     break;
                 case INIMIGO:
                     mapa->inimigos_num++;
-                    /* TODO: Adicionar inimigo */
+                    ret = adiciona_inimigo(&(mapa->inimigos), l+1, c+1,
+                        mapa->inimigos_num);
                     break;
                 case LOLO:
-                    mapa->lolo.y = l;
-                    mapa->lolo.x = c;
+                    mapa->lolo.y = l+1;
+                    mapa->lolo.x = c+1;
                     break;
                 case BAU:
-                    mapa->bau.y = l;
-                    mapa->bau.x = c;
+                    mapa->bau.y = l+1;
+                    mapa->bau.x = c+1;
                     break;
                 default:
                     break;
             }
         }
+
+        /* Não foi possível alocar espaço para os inimigos */
+        if ( ret ) {
+            return 1;
+        }
     }
 
     return 0;
+}
+
+int adiciona_inimigo(inimigo_st ***inimigos, int linha, int coluna, int inimigos_num)
+{
+    /* Tenta realocar, se tmp_list for NULL não conseguiu */
+    inimigo_st **tmp_list;
+    tmp_list = realloc(*inimigos, sizeof (inimigo_st *) * inimigos_num);
+
+    inimigo_st *tmp_inimigo;
+    tmp_inimigo = malloc(sizeof (inimigo_st));
+
+    /* Limpa a memória que estava sendo usada e retorna 1 */
+    if ( tmp_list == NULL || tmp_inimigo == NULL ) {
+        #ifdef DEBUG
+            debug_message("Nao foi possivel alocar memoria para os inimigos");
+        #endif
+
+        limpa_inimigos(inimigos, inimigos_num - 1);
+
+        return 1;
+    } else {
+        /* Ponteiro para inimigo já foi limpo pelo realloc */
+        *inimigos = (inimigo_st **)tmp_list;
+    }
+
+    /* Adiciona o inimigo ao final da lista */
+    tmp_inimigo->pos.y = linha;
+    tmp_inimigo->pos.x = coluna;
+    (*inimigos)[inimigos_num-1] = tmp_inimigo;
+
+    return 0;
+}
+
+int limpa_inimigos(inimigo_st ***inimigos, int inimigos_num)
+{
+    /* Se o ponteiro for NULL ou não tiver inimigos, não precisa ser limpo */
+    if ( *inimigos == NULL || inimigos_num == 0 ) {
+        return 0;
+    }
+
+    /* Limpa cada inimigo alocado */
+    for ( int i = 0; i < inimigos_num; i++ ) {
+        free((*inimigos)[i]);
+    }
+
+    /* Limpa o ponteiro */
+    free(*inimigos);
+
+    return 0;
+}
+
+int limpa_inimigo_pos(inimigo_st ***inimigos, int *inimigos_num, int y, int x)
+{
+    inimigo_st *inimigo_tmp;
+    inimigo_st ***inimigos_tmp;
+
+    /* Procura pelo inimigo */
+    for ( int i = 0; i < *inimigos_num; i++ ) {
+        inimigo_tmp = (*inimigos)[i];
+
+        /* Se encontrou o inimigo, faz p receber o valor de p+1 */
+        if ( inimigo_tmp->pos.y == y && inimigo_tmp->pos.x == x ) {
+            /* Limpa o ponteiro do inimigo a ser eliminado */
+            free(inimigo_tmp);
+
+            /* Altera o valor dos ponteiros */
+            for ( int j = i; j < (*inimigos_num) - 1; j++ ) {
+                (*inimigos)[j] = (*inimigos)[j+1];
+            }
+
+            (*inimigos_num)--;
+
+            /* Diminui a memória alocada */
+            inimigos_tmp = realloc(*inimigos,
+                sizeof (inimigo_st *) * (*inimigos_num));
+
+            /* Verifica se conseguiu diminuir a memória alocada */
+            if ( inimigos_tmp == NULL && (*inimigos_num) > 0 ) {
+                #ifdef DEBUG
+                    debug_message("Nao foi possivel diminuir o numero de "
+                        "inimigos");
+                #endif
+
+                return 1;
+            } else {
+                *inimigos = (inimigo_st **)inimigos_tmp;
+            }
+
+            return 0;
+        }
+    }
+
+    #ifdef DEBUG
+        debug_message("Alerta: Nao foi encontrado inimigo em: (%d, %d)", y, x);
+    #endif
+
+    /* Não encontrou o inimigo */
+    return 1;
 }

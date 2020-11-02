@@ -81,5 +81,5 @@ typedef struct {
     ponto_st bau;
     int coracoes_num;
     int inimigos_num;
-    inimigo_st *inimigos;
+    inimigo_st **inimigos;
 } mapa_st;

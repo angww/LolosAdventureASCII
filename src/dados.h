@@ -5,8 +5,20 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <stdlib.h>
+#include "menus.h"
 
-/* Prepara o mapa uso */
+/*
+ * Adiciona um inimigo, alocado dinamicamente, para uma lista alocada
+ * dinamicamente de inimigos
+ */
+int adiciona_inimigo(inimigo_st ***inimigos, int linha, int coluna, int inimigos_num);
+/* Remove todos os inimigos e a lista de inimigos do heap */
+int limpa_inimigos(inimigo_st ***inimigos, int inimigos_num);
+/* Remove um inimigo da lista baseado em sua localização na tela */
+int limpa_inimigo_pos(inimigo_st ***inimigos, int *inimigos_num, int y, int x);
+
+/* Prepara o mapa para uso */
 int processa_mapa(mapa_st *mapa);
 
 /* Remove qualquer lixo que possa ter */
