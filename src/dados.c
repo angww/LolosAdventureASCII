@@ -146,6 +146,10 @@ int adiciona_inimigo(inimigo_st ***inimigos, int linha, int coluna, int inimigos
             debug_message("Nao foi possivel alocar memoria para os inimigos");
         #endif
 
+        if ( tmp_inimigo != NULL ) {
+            free(tmp_inimigo);
+        }
+
         limpa_inimigos(inimigos, inimigos_num - 1);
 
         return 1;
@@ -197,6 +201,7 @@ int limpa_inimigo_pos(inimigo_st ***inimigos, int *inimigos_num, int y, int x)
             }
 
             (*inimigos_num)--;
+            free((*inimigos)[*inimigos_num]);
 
             /* Diminui a memória alocada */
             inimigos_tmp = realloc(*inimigos,
