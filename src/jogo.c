@@ -33,8 +33,6 @@ int joga_mapas(gravacao_st *gravacao)
 {
     char *niveis[] = NIVEIS;
     mapa_st mapa;
-    mapa.inimigos = NULL;
-    mapa.inimigos_num = 0;
     int ret;
 
     /* Execta até chegar no último arquivo, jogador perder ou voltar ao menu */

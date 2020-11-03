@@ -191,12 +191,9 @@ int limpa_inimigo_pos(inimigo_st ***inimigos, int *inimigos_num, int y, int x)
 
         /* Se encontrou o inimigo, faz p receber o valor de p+1 */
         if ( inimigo_tmp->pos.y == y && inimigo_tmp->pos.x == x ) {
-            /* Limpa o ponteiro do inimigo a ser eliminado */
-            free(inimigo_tmp);
-
             /* Altera o valor dos ponteiros */
             for ( int j = i; j < (*inimigos_num) - 1; j++ ) {
-                (*inimigos)[j] = (*inimigos)[j+1];
+                *((*inimigos)[j]) = *((*inimigos)[j+1]);
             }
 
             (*inimigos_num)--;

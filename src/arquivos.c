@@ -4,6 +4,9 @@ int carrega_arquivo_mapa(mapa_st *mapa, char *filename)
 {
     /* TODO: ler o arquivo direto em mapa->elementos */
 
+    mapa->inimigos = NULL;
+    mapa->inimigos_num = 0;
+
     return processa_mapa(mapa);
 }
 
