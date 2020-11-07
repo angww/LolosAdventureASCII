@@ -56,7 +56,6 @@ int recordes(void)
 
 int distancia_itens(int num_opcoes, int final_y, int inicial_y)
 {
-    /* Variáveis usadas para calcular */
     float y_deltaf;
     int y_delta;
     int tamanho_y;
@@ -67,19 +66,6 @@ int distancia_itens(int num_opcoes, int final_y, int inicial_y)
     y_deltaf  = (float)(tamanho_y - num_opcoes) / num_opcoes;
     /* Espaço truncado entre um item e outro */
     y_delta   = (int)y_deltaf + 1;
-
-    /*
-     * Se adiferença entre uma linha e outra não for exata, aumenta a
-     * distância
-     */
-    if ( y_delta != (int)y_delta ) {
-        y_delta++;
-    }
-
-    /* Diminui a distância */
-    if ( (y_delta * num_opcoes) >= final_y) {
-        y_delta--;
-    }
 
     return y_delta;
 }

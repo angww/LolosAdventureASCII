@@ -66,6 +66,7 @@ int seleciona_opcoes(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
                     opcao++;
                 }
                 break;
+            case KEY_LEFT:
             case ESC:
             case KEY_RESIZE:
                 /*
