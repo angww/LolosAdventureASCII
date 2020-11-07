@@ -2,10 +2,51 @@
 
 int carrega_arquivo_mapa(mapa_st *mapa, char *filename)
 {
-    /* TODO: ler o arquivo direto em mapa->elementos */
+    #ifdef DEBUG
+        debug_message("Carreando nivel \"%s\"", filename);
+    #endif
+
+    int ret = 0;
+    FILE *fp = fopen(filename, "r");
+
+    if ( fp == NULL ) {
+        #ifdef DEBUG
+            debug_message("Erro ao carregar o nivel \"%s\": %s", filename,
+                strerror(errno));
+        #endif
+
+        return 1;
+    }
+
+    for ( int linha = 0; linha < JOGO_JANELA_Y; linha++ ){
+        ret = fread(mapa->elementos[linha], sizeof (char), JOGO_JANELA_X, fp);
+
+        if ( ret != JOGO_JANELA_X ) {
+            #ifdef DEBUG
+                debug_message("Erro ao ler arquivo de nivel \"%s\"", filename);
+            #endif
+
+            break;
+        }
+
+        /* Pula o '\n' do arquivo */
+        fgetc(fp);
+    }
+
+    if ( fclose(fp) != 0 ) {
+        #ifdef DEBUG
+            debug_message("Erro ao fechar o arquivo %s: %s", filename,
+                strerror(errno));
+        #endif
+
+        return 2;
+    } else if ( ret != JOGO_JANELA_X ) {
+        return 3;
+    }
 
     mapa->inimigos = NULL;
     mapa->inimigos_num = 0;
+    mapa->coracoes_num = 0;
 
     return processa_mapa(mapa);
 }

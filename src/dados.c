@@ -59,48 +59,17 @@ void formata_delta_tempo(char *buf, int size, int time)
 
 int processa_mapa(mapa_st *mapa)
 {
-    /* O grid já deve estar no mapa, apenas exemplo */
-    char tmp[JOGO_JANELA_Y][JOGO_JANELA_X] = {
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-        "P            PP                                       P",
-        "P            PP   PPPPPPPPPPPPPPP  PPPPPP             P",
-        "P     @      PP   PPPPPPPPPPPPPPP  PPPPPP             P",
-        "P            PP         E                    C        P",
-        "P            PP                                       P",
-        "P   PPPPPPPPPPP   PPPPPPPPPPPPPPP  PPPPPP             P",
-        "P   PPPPPPPPPPP   PPPPPPPPPPPPPPP  PPPPPP             P",
-        "P                          PP          PP             P",
-        "P                          PP          PP             P",
-        "P                      E   PP        C PP             P",
-        "P       C                  PP  E       PP             P",
-        "P                          PP          PP             P",
-        "P                          PP          PP             P",
-        "PPPPPPPPPPPPPPPP           PP  C       PP             P",
-        "PPPPPPPPPPPPPPPP           PP          PPPPPPPMMMPPPPPP",
-        "PAA        E  PP           PP          PPPPPPP   PPPPPP",
-        "PAAA          PP           PP      E   PP             P",
-        "PAAAA                      PP          PP      E      P",
-        "PAAA                       PP          PP             P",
-        "PAA           PP           PP          PP             P",
-        "PA       C    PP           PP   C      PP      T      P",
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"};
-
-    for ( int l = 0; l < JOGO_JANELA_Y; l++ ) {
-        for ( int c = 0; c < JOGO_JANELA_X; c++ ) {
-            mapa->elementos[l][c] = tmp[l][c];
-        }
-    }
+    #ifdef DEBUG
+        debug_message("Processando nivel");
+    #endif
 
     int ret = 0;
-
-    /* Limpa o lixo */
-    mapa->coracoes_num = 0;
 
     /* Percorre o mapa */
     for ( int l = 0; l < JOGO_JANELA_Y; l++ ) {
         for ( int c = 0; c < JOGO_JANELA_X; c++ ) {
             /* l+1 e c+1 serão as posições na tela */
-            switch ( tmp[l][c] ) {
+            switch ( mapa->elementos[l][c] ) {
                 case CORACAO:
                     mapa->coracoes_num++;
                     break;
@@ -124,9 +93,17 @@ int processa_mapa(mapa_st *mapa)
 
         /* Não foi possível alocar espaço para os inimigos */
         if ( ret ) {
+            #ifdef DEBUG
+                debug_message("Nao foi possivel alocar espaco para os inimigos");
+            #endif
+
             return 1;
         }
     }
+
+    #ifdef DEBUG
+        debug_message("Nivel processado");
+    #endif
 
     return 0;
 }
