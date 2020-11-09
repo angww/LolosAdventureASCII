@@ -7,12 +7,12 @@ void inicializa_cores(void)
 
     init_pair(HIGHLIGHT,   COLOR_BLACK,   COLOR_WHITE);
     init_pair(LOLO_COR,    COLOR_GREEN,   COLOR_BLACK);
-    init_pair(INIMIGO_COR, COLOR_RED,     COLOR_BLACK);
-    init_pair(AGUA_COR,    COLOR_BLUE,    COLOR_BLACK);
-    init_pair(BAU_COR,     COLOR_MAGENTA, COLOR_BLACK);
-    init_pair(FIXO_COR,    COLOR_WHITE,   COLOR_BLACK);
-    init_pair(MOVEL_COR,   COLOR_CYAN,    COLOR_BLACK);
-    init_pair(CORACAO_COR, COLOR_YELLOW,  COLOR_BLACK);
+    init_pair(INIMIGO_COR, COLOR_BLACK,   COLOR_RED);
+    init_pair(AGUA_COR,    COLOR_BLUE,    COLOR_CYAN);
+    init_pair(BAU_COR,     COLOR_BLACK,   COLOR_MAGENTA);
+    init_pair(FIXO_COR,    COLOR_BLACK,   COLOR_YELLOW);
+    init_pair(MOVEL_COR,   COLOR_BLACK,   COLOR_CYAN);
+    init_pair(CORACAO_COR, COLOR_WHITE,   COLOR_MAGENTA);
 }
 
 void exibe_caractere_jogo(char ch, int y, int x)
