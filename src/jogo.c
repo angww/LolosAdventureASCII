@@ -54,7 +54,7 @@ int joga_mapas(gravacao_st *gravacao)
     return 0;
 }
 
-/* TODO: apenas funcionamento básico, 's' para sair */
+/* TODO: apenas funcionamento básico, ESC abre o menu */
 int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 {
     /* Onde deve exibir as informações */
@@ -64,6 +64,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
     lolo_st lolo;
     int ch;
     int ret;
+    int comando_menu_pause;
 
     /* Carrega as informações do último nível e a posição atual */
     lolo.vidas = gravacao->vidas;
@@ -77,6 +78,8 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 
     exibe_jogo(&lolo, gravacao, mapa, y_delta_info, y_inicio_info);
 
+    /* Loop com submenu de pause */
+    do {
     /* Loop principal */
     do {
         /* Espera 1000/20 ms, então lê a entrada */
@@ -117,8 +120,12 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
         }
 
         /* TODO: */
-        if ( ret & ATUALIZA_BAU || ret & ATUALIZA_ERRO || lolo.vidas == 0 ) {
+        if ( ret & ATUALIZA_BAU || ret & ATUALIZA_ERRO ) {
             ch = 's';
+        }
+
+        if (lolo.vidas < 1) {
+            ch = GAME_OVER;
         }
 
         /* Movimenta os inimigos que estão vivos */
@@ -127,7 +134,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
              * Se o inimigo pegou Lolo, diminui a vida de Lolo e remove o
              * inimigo
              */
-            if ( movimenta_inimigo((mapa->inimigos)[i]) ) {
+            if ( movimenta_inimigo((mapa->inimigos)[i], mapa) ) {
                 #ifdef DEBUG
                     debug_message("Inimigo pegou Lolo");
                 #endif
@@ -151,7 +158,24 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 
         ret = 0;
         refresh();
-    } while ( ch != 's' );
+
+    } while ( ch != ESC_KEY && ch != GAME_OVER);
+
+        if (ch == ESC_KEY) {
+            
+            comando_menu_pause = processa_menu_pause();
+
+            /* Redesenha mapa atualizado */
+            exibe_jogo(&lolo, gravacao, mapa, y_delta_info, y_inicio_info);
+        }
+
+        if (ch == GAME_OVER) {
+
+            comando_menu_pause = processa_menu_game_over();
+
+        }
+
+    } while (comando_menu_pause != OPCAO_SAIR);    
 
     /* Limpa os inimigos remanescentes */
     limpa_inimigos(&(mapa->inimigos), mapa->inimigos_num);
@@ -163,7 +187,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
     gravacao->final = time(NULL);
 
     /* TODO: outros retorno, por enquanto não há necessidade */
-    return (lolo.vidas == 0 ? 1 : 0);
+    return (lolo.vidas == 0 ? 1 : 0) || (comando_menu_pause == OPCAO_SAIR);
 }
 
 void exibe_jogo(lolo_st *lolo, gravacao_st *gravacao, mapa_st *mapa,
@@ -259,8 +283,10 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
              */
             if ( _ch == LIVRE ) {
                 exibe_caractere_jogo(BLOCO_MOVEL, bloco_pos.y, bloco_pos.x);
-                mapa->elementos[(new_pos.y)-1][(new_pos.x)-1] = LIVRE;
-                mapa->elementos[(bloco_pos.y)-1][(bloco_pos.x)-1] = BLOCO_MOVEL;
+                //mapa->elementos[(new_pos.y)-1][(new_pos.x)-1] = LIVRE;
+                atualiza_grid_mapa(mapa, new_pos, LIVRE);
+                //mapa->elementos[(bloco_pos.y)-1][(bloco_pos.x)-1] = BLOCO_MOVEL;
+                atualiza_grid_mapa(mapa, bloco_pos, BLOCO_MOVEL);
             } else {
                 movimenta = 0;
             }
@@ -281,7 +307,8 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
             break;
         case CORACAO:
             /* Remove o coração dos elementos do mapa */
-            mapa->elementos[(new_pos.y)-1][(new_pos.x)-1] = LIVRE;
+            //mapa->elementos[(new_pos.y)-1][(new_pos.x)-1] = LIVRE;
+            atualiza_grid_mapa(mapa, new_pos, LIVRE);
             mapa->coracoes_num--;
             lolo->vidas++;
             atualiza = ATUALIZA_CORACAO|ATUALIZA_VIDA;
@@ -311,7 +338,7 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
     return atualiza;
 }
 
-int movimenta_inimigo(inimigo_st *inimigo)
+int movimenta_inimigo(inimigo_st *inimigo, mapa_st *mapa)
 {
     int mov = 0;
     int _mov;
@@ -346,6 +373,7 @@ int movimenta_inimigo(inimigo_st *inimigo)
 
     /* Desenha espaço livre onde o inimigo estava */
     exibe_caractere_jogo(LIVRE, inimigo->pos.y, inimigo->pos.x);
+    atualiza_grid_mapa(mapa, inimigo->pos, LIVRE);
 
     /* Atualiza a posição do inimigo */
     inimigo->pos = muda_pos(inimigo->pos, mov);
@@ -357,6 +385,7 @@ int movimenta_inimigo(inimigo_st *inimigo)
 
     /* Desenha o inimigo na nova posição */
     exibe_caractere_jogo(INIMIGO, inimigo->pos.y, inimigo->pos.x);
+    atualiza_grid_mapa(mapa, inimigo->pos, INIMIGO);
 
     return 0;
 }
@@ -373,3 +402,11 @@ int prox_mov(char adjacentes[4], int mov) {
 
     return mov;
 }
+
+int atualiza_grid_mapa(mapa_st *mapa, ponto_st pos, int item_grid) {
+    /* Pos -1 devido a borda da janela */
+    mapa->elementos[(pos.y)-1][(pos.x)-1] = item_grid;
+    return 1;
+}
+
+

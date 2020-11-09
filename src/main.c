@@ -51,6 +51,13 @@ int main(int argc, char **argv)
     raw();
     halfdelay(JANELA_MSEC_ANIMACAO);
     keypad(stdscr, true);
+    /* 
+     *  Muda o ESCDELAY na Ncurses. É o tempo que aguarda para uma combinação 
+     *  de teclas.  No jogo não é utilizada combinação de teclas, então é 
+     *  setado para 1ms para que a tecla ESC no submenu do jogo funcione sem 
+     *  delay 
+     */
+    set_escdelay(1);
 
     inicializa_cores();
 
