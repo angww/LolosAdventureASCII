@@ -1,15 +1,22 @@
 #pragma once
 
+#include <stdlib.h>
+#include <time.h>
+#include <ncurses.h>
 #include "defines_lolo.h"
 #include "arquivos.h"
 #include "cores.h"
 #include "menus.h"
 #include "dados.h"
-#include <stdlib.h>
-#include <time.h>
-#include <ncurses.h>
+#include "janela_tamanho.h"
 #include "selecionar_opcoes_posicao.h"
 
+/* Atualiza determinada informação, dada por ATUALIZA_* */
+void atualiza_info(lolo_st *lolo, mapa_st *mapa, int y_delta_info,
+    int y_inicio_info, int atualiza);
+/* Exibe toda a janela do jogo */
+void exibe_jogo(lolo_st *lolo, gravacao_st *gravacao, mapa_st *mapa,
+    int y_delta_info, int y_inicio_info);
 /* Executa os mapa apartir do definido em gravacao */
 int joga_mapas(gravacao_st *gravacao);
 /*
@@ -29,15 +36,7 @@ int novojogo(void);
 int carregarjogo(void);
 /* Retorna ponto_st com a posição alterada conforme key */
 ponto_st muda_pos(ponto_st pos, int key);
-/*
- * Movimenta Lolo pelo tela e retorna um código específico:
- * 0 -> Movimentação normal
- * 1 -> Não se moveu
- * 2 -> Lolo perdeu uma vida para um inimigo
- * 3 -> Lolo perdeu uma vida para água
- * 4 -> Lolo pegou um coração
- * 5 -> Lolo está em um baú
- */
-int movimenta_lolo(lolo_st *lolo, int key);
+/* Movimenta Lolo, valor retorna definido por ATUALIZA_* */
+int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key);
 /* Retorna mov em um posição adjacente válida */
 int prox_mov(char adjacentes[4], int mov);

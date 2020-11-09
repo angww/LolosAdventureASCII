@@ -18,13 +18,9 @@ void limpa_record(recorde_st *recorde)
     recorde->tempo_total = 0;
 }
 
-void exibe_dados_inicial(gravacao_st *gravacao, mapa_st *mapa, lolo_st *lolo,
-    int *y_delta, int *y_inicio)
+void exibe_todos_dados(gravacao_st *gravacao, mapa_st *mapa, lolo_st *lolo,
+    int y_delta, int y_inicio)
 {
-    /* A distãncia dos itens será usada posteriormente no jogo */
-    *y_delta = distancia_itens(9, 22, 3);
-    *y_inicio = 3 + (*y_delta / 2);
-
     char infos[9][20];
 
     /* Formata as informações a serem exibidas */
@@ -35,16 +31,34 @@ void exibe_dados_inicial(gravacao_st *gravacao, mapa_st *mapa, lolo_st *lolo,
     snprintf(infos[4], 19, "Fase atual: %d", gravacao->ultimafase+1);
     snprintf(infos[5], 19, "Pontucao: %d", lolo->pontos);
 
-    /* Tempo sempre inicia com 00:00:00 */
     strncpy(infos[6], "Tempo:", 19);
-    strncpy(infos[7], "00:00:00", 19);
-
+    formata_delta_tempo(infos[7], 19,
+        (int)difftime(time(NULL), gravacao->final));
     formata_delta_tempo(infos[8], 19,
         (int)difftime(gravacao->final, gravacao->inicio));
 
     /* exibe_itens gera core dump */
     for ( int i = 0; i < 9; i++ ) {
-        exibe_item(infos[i], i, *y_inicio, *y_delta, 55+2+11);
+        exibe_item(infos[i], i, y_inicio, y_delta, 55+2+11);
+    }
+}
+
+void atualiza_info(lolo_st *lolo, mapa_st *mapa, int y_delta_info,
+    int y_inicio_info, int atualiza)
+{
+    char buf[19];
+
+    if ( atualiza & ATUALIZA_VIDA ) {
+          snprintf(buf, 19, "Vidas: %d", lolo->vidas);
+          exibe_item(buf, 1, y_inicio_info, y_delta_info, 55+2+11);
+    }
+    if ( atualiza & ATUALIZA_INIMIGO ) {
+        snprintf(buf, 19, "inimigos: %d", mapa->inimigos_num);
+        exibe_item(buf, 2, y_inicio_info, y_delta_info, 55+2+11);
+    }
+    if ( atualiza & ATUALIZA_CORACAO ) {
+        snprintf(buf, 19, "Coracoes: %d", mapa->coracoes_num);
+        exibe_item(buf, 3, y_inicio_info, y_delta_info, 55+2+11);
     }
 }
 
@@ -74,11 +88,13 @@ int processa_mapa(mapa_st *mapa)
                     mapa->coracoes_num++;
                     break;
                 case INIMIGO:
+                    mapa->elementos[l][c] = LIVRE;
                     mapa->inimigos_num++;
                     ret = adiciona_inimigo(&(mapa->inimigos), l+1, c+1,
                         mapa->inimigos_num);
                     break;
                 case LOLO:
+                    mapa->elementos[l][c] = LIVRE;
                     mapa->lolo.y = l+1;
                     mapa->lolo.x = c+1;
                     break;

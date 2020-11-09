@@ -58,8 +58,8 @@ int joga_mapas(gravacao_st *gravacao)
 int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 {
     /* Onde deve exibir as informações */
-    int y_delta_info;
-    int y_inicio_info;
+    int y_delta_info = distancia_itens(9, 22, 3);
+    int y_inicio_info = 3 + (y_delta_info / 2);
     char buf[19];
     lolo_st lolo;
     int ch;
@@ -71,17 +71,11 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
     lolo.pos.x = mapa->lolo.x;
     lolo.pontos = gravacao->totalpts;
 
-    /* Exibe todo o mapa */
-    exibe_grid(mapa->elementos);
+    if ( !tamanho_valido() ) {
+        espera_tamanho_valido();
+    }
 
-    /* Exibe um separador entre o mapa e as informações */
-    move(1,56);
-    attron(COLOR_PAIR(HIGHLIGHT));
-    vline(' ', 23);
-    attroff(COLOR_PAIR(HIGHLIGHT));
-
-    /* Exibe as informações */
-    exibe_dados_inicial(gravacao, mapa, &lolo, &y_delta_info, &y_inicio_info);
+    exibe_jogo(&lolo, gravacao, mapa, y_delta_info, y_inicio_info);
 
     /* Loop principal */
     do {
@@ -92,52 +86,62 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
         flushinp();
 
         switch ( ch ){
+            case KEY_RESIZE:
+                if ( !tamanho_valido() ) {
+                    espera_tamanho_valido();
+                    exibe_jogo(&lolo, gravacao, mapa, y_delta_info, y_inicio_info);
+                } else {
+                    resize_term(JANELA_MAX_Y, JANELA_MAX_X);
+                }
+                break;
             /* Chama movimenta_lolo apenas se for uma tecla de movimentação */
             case KEY_UP:
             case KEY_DOWN:
             case KEY_RIGHT:
             case KEY_LEFT:
-                ret = movimenta_lolo(&lolo, ch);
-
-                /* Atualiza informações conforme a Movimentação do Lolo */
-                switch ( ret ) {
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 255:
-                        /* Atualiza a vida */
-                        snprintf(buf, 19, "Vidas: %d", lolo.vidas);
-                        exibe_item(buf, 1, y_inicio_info, y_delta_info, 55+2+11);
-
-                        /* Não tem mais vidas */
-                        if ( ret == 255 ) {
-                            /* TODO: Mostrar menu */
-                            ch = 's';
-                        /* Matou um inimigo */
-                        } else if ( ret == 2 ) {
-                            /* TODO: Adicionar verificação */
-                            limpa_inimigo_pos(&(mapa->inimigos), &(mapa->inimigos_num),
-                                lolo.pos.y, lolo.pos.x);
-                            snprintf(buf, 19, "inimigos: %d", mapa->inimigos_num);
-                            exibe_item(buf, 2, y_inicio_info, y_delta_info, 55+2+11);
-                        /* Pegou um coração */
-                        } else if ( ret == 4 ) {
-                            mapa->coracoes_num--;
-                            snprintf(buf, 19, "Coracoes: %d", mapa->coracoes_num);
-                            exibe_item(buf, 3, y_inicio_info, y_delta_info, 55+2+11);
-                        }
-
-                        break;
-                    default:
-                        break;
+                ret = movimenta_lolo(&lolo, mapa, ch);
+                break;
+            case ERR:
+                if ( (mapa->elementos)[(lolo.pos.y)-1][(lolo.pos.x)-1] == AGUA ) {
+                    lolo.vidas--;
+                    ret = ATUALIZA_VIDA;
                 }
+                break;
             default:
                 break;
         }
 
+        /* movimenta_lolo precisa atualizar alguma informação */
+        if ( ret ) {
+            atualiza_info(&lolo, mapa, y_delta_info, y_inicio_info, ret);
+        }
+
+        /* TODO: */
+        if ( ret & ATUALIZA_BAU || ret & ATUALIZA_ERRO || lolo.vidas == 0 ) {
+            ch = 's';
+        }
+
         /* Movimenta os inimigos que estão vivos */
         for ( int i = 0; i < mapa->inimigos_num; i++ ) {
-            movimenta_inimigo((mapa->inimigos)[i]);
+            /*
+             * Se o inimigo pegou Lolo, diminui a vida de Lolo e remove o
+             * inimigo
+             */
+            if ( movimenta_inimigo((mapa->inimigos)[i]) ) {
+                #ifdef DEBUG
+                    debug_message("Inimigo pegou Lolo");
+                #endif
+
+                if ( !(limpa_inimigo_pos(&(mapa->inimigos), &(mapa->inimigos_num),
+                    lolo.pos.y, lolo.pos.x)) && lolo.vidas > 1 ) {
+                    lolo.vidas--;
+                    atualiza_info(&lolo, mapa, y_delta_info, y_inicio_info,
+                        ATUALIZA_VIDA|ATUALIZA_INIMIGO);
+                } else {
+                    ch = 's';
+                    break;
+                }
+            }
         }
 
         /* Atualiza o tempo */
@@ -145,6 +149,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
             (long int)difftime(time(NULL), gravacao->final));
         exibe_item(buf, 7, y_inicio_info, y_delta_info, 55+2+11);
 
+        ret = 0;
         refresh();
     } while ( ch != 's' );
 
@@ -160,6 +165,33 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
     /* TODO: outros retorno, por enquanto não há necessidade */
     return (lolo.vidas == 0 ? 1 : 0);
 }
+
+void exibe_jogo(lolo_st *lolo, gravacao_st *gravacao, mapa_st *mapa,
+    int y_delta_info, int y_inicio_info)
+{
+    desenha_borda(stdscr);
+
+    /* Exibe todo o mapa */
+    exibe_grid(mapa->elementos);
+
+    /* Exibe Lolo e os inimigos */
+    exibe_caractere_jogo(LOLO, lolo->pos.y, lolo->pos.x);
+
+    for ( int i = 0; i < mapa->inimigos_num; i++ ) {
+        exibe_caractere_jogo(INIMIGO, (mapa->inimigos[i])->pos.y,
+            (mapa->inimigos[i])->pos.x);
+    }
+
+    /* Exibe um separador entre o mapa e as informações */
+    move(1,56);
+    attron(COLOR_PAIR(HIGHLIGHT));
+    vline(' ', 23);
+    attroff(COLOR_PAIR(HIGHLIGHT));
+
+    /* Exibe as informações */
+    exibe_todos_dados(gravacao, mapa, lolo, y_delta_info, y_inicio_info);
+}
+
 
 void exibe_grid(char grid[JOGO_JANELA_Y][JOGO_JANELA_X])
 {
@@ -198,7 +230,7 @@ ponto_st muda_pos(ponto_st pos, int key)
     return pos;
 }
 
-int movimenta_lolo(lolo_st *lolo, int key)
+int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
 {
     /* Próxima posição de Lolo */
     ponto_st new_pos = muda_pos(lolo->pos, key);
@@ -209,74 +241,74 @@ int movimenta_lolo(lolo_st *lolo, int key)
     chtype ch = mvinch(new_pos.y, new_pos.x) & A_CHARTEXT; /* Extrai o texto */
     chtype _ch;
     /* Indica se precisamos mudar a posição de lolo em sua estrutura */
-    int movimenta = 0;
-    /* Valor a ser retornado */
-    int ret = 0;
+    int movimenta = 1;
+    /* Valor a ser retornado, indica se devemos atualizar alguma informação */
+    int atualiza = 0;
 
     switch ( ch ) {
-        /* Não se mexe */
         case BLOCO_FIXO:
-            ret = 1;
+            movimenta = 0;
             break;
-        /* Verifica se é válido */
         case BLOCO_MOVEL:
             bloco_pos = muda_pos(new_pos, key);
             _ch = mvinch(bloco_pos.y, bloco_pos.x) & A_CHARTEXT;
 
-            /* Se a próxima posição for um bloco móvel então é válido */
+            /*
+             * Se a próxima posição do bloco móvel estiver livre então é válido,
+             * imprime o caractere na tela e atualiza o elementos de mapa
+             */
             if ( _ch == LIVRE ) {
                 exibe_caractere_jogo(BLOCO_MOVEL, bloco_pos.y, bloco_pos.x);
-                movimenta = 1;
-            /* Se não for não fazemos nada */
+                mapa->elementos[(new_pos.y)-1][(new_pos.x)-1] = LIVRE;
+                mapa->elementos[(bloco_pos.y)-1][(bloco_pos.x)-1] = BLOCO_MOVEL;
             } else {
-                /* Indica que não houve nenhuma mudança na posição */
-                ret = 1;
+                movimenta = 0;
             }
             break;
         case INIMIGO:
-        case AGUA:
-            lolo->vidas--;
-
-            /* Se tiver vidas o suficente, move-se e perde uma vida */
-            if ( lolo->vidas > 0 ) {
-                movimenta = 1;
-                ret = (ch == INIMIGO ? 2 : 3);
-            /* Se não perdeu */
+            if ( limpa_inimigo_pos(&(mapa->inimigos), &(mapa->inimigos_num),
+                new_pos.y, new_pos.x) ) {
+                atualiza = ATUALIZA_ERRO;
+                movimenta = 0;
             } else {
-                movimenta = 1;
-                ret =  255;
+                lolo->vidas--;
+                atualiza = ATUALIZA_INIMIGO|ATUALIZA_VIDA;
             }
             break;
-        /* Se foi uma coração devemos aumentar a vida */
-        case CORACAO:
-            lolo->vidas++;
-            movimenta = 1;
-            ret = 4;
+        case AGUA:
+            lolo->vidas--;
+            atualiza = ATUALIZA_VIDA;
             break;
-        /*
-        * Se foi o baú nos movemos para ele e verificamos no loop principal se está
-        * aberto
-        */
+        case CORACAO:
+            /* Remove o coração dos elementos do mapa */
+            mapa->elementos[(new_pos.y)-1][(new_pos.x)-1] = LIVRE;
+            mapa->coracoes_num--;
+            lolo->vidas++;
+            atualiza = ATUALIZA_CORACAO|ATUALIZA_VIDA;
+            break;
         case BAU:
-            movimenta = 1;
-            ret = 5;
+            /* Se o baú não estiver aberto lolo não pode passar por ele */
+            if ( !(mapa->inimigos_num == 0 && mapa->coracoes_num == 0) ) {
+                movimenta = 0;
+            } else {
+                atualiza = ATUALIZA_BAU;
+            }
             break;
         /* Bloco Livre */
         default:
-            movimenta = 1;
             break;
     }
 
     /* Atualiza a posição de Lolo em sua estrtura */
     if ( movimenta ) {
-        /* O loop deve ver se antigamente era um baú */
-        exibe_caractere_jogo(LIVRE, lolo->pos.y, lolo->pos.x);
+        /* Exibe o caractere que estava abaixo de lolo */
+        exibe_caractere_jogo((mapa->elementos)[(lolo->pos.y)-1][(lolo->pos.x)-1], lolo->pos.y, lolo->pos.x);
         exibe_caractere_jogo(LOLO, new_pos.y, new_pos.x);
         lolo->pos = new_pos;
     }
 
     /* retorno o código específico */
-    return ret;
+    return atualiza;
 }
 
 int movimenta_inimigo(inimigo_st *inimigo)
@@ -318,11 +350,15 @@ int movimenta_inimigo(inimigo_st *inimigo)
     /* Atualiza a posição do inimigo */
     inimigo->pos = muda_pos(inimigo->pos, mov);
 
+    if ( adjacentes[mov] == LOLO ) {
+        /* Inimigo pegou Lolo */
+        return 1;
+    }
+
     /* Desenha o inimigo na nova posição */
     exibe_caractere_jogo(INIMIGO, inimigo->pos.y, inimigo->pos.x);
 
-    /* Indica que a posição do inimigo mudou */
-    return 1;
+    return 0;
 }
 
 int prox_mov(char adjacentes[4], int mov) {
