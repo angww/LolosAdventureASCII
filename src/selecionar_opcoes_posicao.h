@@ -3,6 +3,9 @@
 #include <ncurses.h>
 #include <string.h>
 
+/* Keycode da tecla ESC */
+#define ESC_KEY 27
+
 /* Indica se houve mudança ou não */
 #define MUDANCA_NENHUMA 0
 #define MUDANCA_OPCAO   1
