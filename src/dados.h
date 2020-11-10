@@ -31,6 +31,9 @@ int processa_mapa(mapa_st *mapa);
 void limpa_save(gravacao_st *gravacao);
 void limpa_record(recorde_st *recorde);
 
+/* Cria dados iniciais inventados para os primeiros recordes, para não ficar branco */
+void grava_inicial_fake_record(recorde_st *recorde);
+
 /* Exibe todos os dados */
 void exibe_todos_dados(gravacao_st *gravacao, mapa_st *mapa, lolo_st *lolo,
     int y_delta, int y_inicio);

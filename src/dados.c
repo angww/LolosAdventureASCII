@@ -18,6 +18,30 @@ void limpa_record(recorde_st *recorde)
     recorde->tempo_total = 0;
 }
 
+void grava_inicial_fake_record(recorde_st *recorde) 
+{
+    recorde[0].totalpts = 30;
+    recorde[0].tempo_total = 110;
+    strcpy(recorde[0].nome_jogador, "John Doe");
+
+    recorde[1].totalpts = 29;
+    recorde[1].tempo_total = 120;
+    strcpy(recorde[1].nome_jogador, "DerikOwn");
+
+    recorde[2].totalpts = 28;
+    recorde[2].tempo_total = 130;
+    strcpy(recorde[2].nome_jogador, "MikaShaw");
+
+    recorde[3].totalpts = 20;
+    recorde[3].tempo_total = 140;
+    strcpy(recorde[3].nome_jogador, "Ross Ste");
+
+    recorde[4].totalpts = 10;
+    recorde[4].tempo_total = 150;
+    strcpy(recorde[4].nome_jogador, "SteveWoz");
+
+}
+
 void exibe_todos_dados(gravacao_st *gravacao, mapa_st *mapa, lolo_st *lolo,
     int y_delta, int y_inicio)
 {

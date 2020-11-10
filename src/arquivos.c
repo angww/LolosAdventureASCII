@@ -106,9 +106,10 @@ int verifica_arquivos(void)
         }
 
         recorde_st tmp_recorde[5];
-        for ( int i = 0; i < 5; i++ ) {
+        grava_inicial_fake_record(&tmp_recorde);
+        /* for ( int i = 0; i < 5; i++ ) {
             limpa_record(&tmp_recorde[i]);
-        }
+        } */
 
         ret = escreve_arquivo(tmp_recorde, sizeof (recorde_st), 5, PASTA "/" RECORDS_FILE);
         if ( ret ) {

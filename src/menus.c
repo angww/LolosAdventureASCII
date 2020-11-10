@@ -1,4 +1,5 @@
 #include "menus.h"
+#include "arquivos.h"
 
 int menu_principal(void)
 {
@@ -36,15 +37,22 @@ int creditos(void)
 
 int recordes(void)
 {
-    /* TODO: ler arquivo de recordes */
-    char *recordes[] = {
-                       "Recordes",
-                       "#0001 127389 912738 18293",
-                       "#0001 127389 912738 18293",
-                       "#0001 127389 912738 18293",
-                       "#0001 127389 912738 18293",
-                       "#0001 127389 912738 18293"};
+    char *recordes[6] = { "Recordes" };
+    
+    char recorde_formatado[100];
+    recorde_st buffer[5];
 
+    le_arquivo(&buffer, sizeof(buffer), 1, PASTA "/" RECORDS_FILE);
+
+    /* TODO: Formatar t_time do tempo_total */
+    for (int i = 1; i < 6; i++ ) {
+        sprintf(recorde_formatado, "#000%d  %d  %s  %d", i,
+            buffer[i-1].totalpts, buffer[i-1].nome_jogador, 
+            buffer[i-1].tempo_total);
+        recordes[i] = strdup(recorde_formatado);
+
+    }
+ 
     char *opcao = "Voltar ao menu principal";
     int y_delta = distancia_itens(7, 23, 2);
     int y_inicio = 2 + (y_delta / 2);
