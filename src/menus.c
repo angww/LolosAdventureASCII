@@ -39,17 +39,22 @@ int recordes(void)
 {
     char *recordes[6] = { "Recordes" };
     
-    char recorde_formatado[100];
+    char recorde_formatado[100], tempo_formatado[10];
+    struct tm *tempo = NULL;
     recorde_st buffer[5];
 
     le_arquivo(&buffer, sizeof(buffer), 1, PASTA "/" RECORDS_FILE);
 
-    /* TODO: Formatar t_time do tempo_total */
-    for (int i = 1; i < 6; i++ ) {
-        sprintf(recorde_formatado, "#000%d  %d  %s  %d", i,
-            buffer[i-1].totalpts, buffer[i-1].nome_jogador, 
-            buffer[i-1].tempo_total);
-        recordes[i] = strdup(recorde_formatado);
+    
+    for (int i = 0; i < 5; i++ ) {
+        
+        tempo =  localtime(&buffer[i].tempo_total);
+        sprintf(tempo_formatado, "%d:%02d", tempo->tm_min, tempo->tm_sec);
+
+        sprintf(recorde_formatado, "#000%d  %3d  \t%s \t%s", i,
+                buffer[i].totalpts, buffer[i].nome_jogador,
+                tempo_formatado);
+        recordes[i+1] = strdup(recorde_formatado);
 
     }
  
