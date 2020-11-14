@@ -10,6 +10,7 @@
 #include "dados.h"
 #include "janela_tamanho.h"
 #include "selecionar_opcoes_posicao.h"
+#include "movimentacao.h"
 
 /* Tecla 254 escolhida arbitrariamente para GAME_OVER */
 #define GAME_OVER      254
@@ -31,18 +32,10 @@ int joga_mapas(gravacao_st *gravacao);
 int loop_jogo(mapa_st *mapa, gravacao_st *gravacao);
 /* Primeira exibição completa do mapa */
 void exibe_grid(char grid[JOGO_JANELA_Y][JOGO_JANELA_X]);
-/* Movimenta o inimigo na tela, retorna 0 se não se moveu */
-int movimenta_inimigo(inimigo_st *inimigo);
 /* Abre um novo jogo */
 int novojogo(void);
 /* Carrega um save e continuar a jogar nele */
 int carregarjogo(void);
-/* Retorna ponto_st com a posição alterada conforme key */
-ponto_st muda_pos(ponto_st pos, int key);
-/* Movimenta Lolo, valor retorna definido por ATUALIZA_* */
-int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key);
-/* Retorna mov em um posição adjacente válida */
-int prox_mov(char adjacentes[4], int mov);
 /* Diminui inicio dos tempos usados em gravação */
 void altera_inicio(gravacao_st *gravacao, time_t inicio);
 /* Atualiza o mapa no determinado ponto 'pos' colocando o item_grid */
