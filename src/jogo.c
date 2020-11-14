@@ -61,16 +61,18 @@ int salvarjogo(gravacao_st *gravacao)
     /* Número de gravações já existentes */
     gravacao_st tmp_gravacao[5];
     le_arquivo(tmp_gravacao, sizeof (gravacao_st), 5, PASTA "/" SAVE_FILE);
-    int ngravacoes = num_gravacoes(tmp_gravacao);
+    int pos = num_gravacoes(tmp_gravacao);
 
-    /* Se for 5 então temos que sobreescrever alguma */
-    if ( ngravacoes == 5 ) {
-        seleciona_gravacao_salvar(tmp_gravacao);
-    /* Se 0-4 então podemos salvar, salvaremos na última posição livre */
-    } else if ( ngravacoes >= 0 && ngravacoes < 5 ) {
-        escreve_arquivo_pos(gravacao, sizeof (gravacao_st), PASTA "/" SAVE_FILE,
-            ngravacoes);
+    if ( pos == 5 ) {
+        pos = seleciona_gravacao_sobreescrever(tmp_gravacao);
+
+        if ( pos == 5 ) {
+            return 1;
+        }
     }
+
+    escreve_arquivo_pos(gravacao, sizeof (gravacao_st), PASTA "/" SAVE_FILE,
+        pos);
 
     return 0;
 }

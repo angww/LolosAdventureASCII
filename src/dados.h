@@ -14,6 +14,8 @@
 #define ATUALIZA_GANHOU  8
 #define ATUALIZA_ERRO    16
 
+/* Formata as cinco entradas da gravação em opcoes */
+int formata_gravacao(gravacao_st gravacao[5], char opcoes[5][60]);
 /* Retorna quantas gravações existem */
 int num_gravacoes(gravacao_st gravacao[5]);
 /* Retorna o maior id de gravacao */

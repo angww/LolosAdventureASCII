@@ -67,7 +67,6 @@ int seleciona_gravacao(void)
     int y_delta = distancia_itens(8, 23, 4);
     int y_inicio = 4 + (y_delta / 2);
     char opcoes[6][60];
-    char tempo_formatado[10];
     gravacao_st buffer[5];
 
     le_arquivo(buffer, sizeof( gravacao_st ), 5, PASTA "/" SAVE_FILE);
@@ -103,7 +102,7 @@ int seleciona_gravacao(void)
     return ret;
 }
 
-int seleciona_gravacao_salvar(gravacao_st gravacao[5])
+int seleciona_gravacao_sobreescrever(gravacao_st gravacao[5])
 {
     int ret;
     int y_delta = distancia_itens(8, 23, 4);
@@ -140,28 +139,6 @@ int seleciona_gravacao_salvar(gravacao_st gravacao[5])
     return ret;
 }
 
-int formata_gravacao(gravacao_st gravacao[5], char opcoes[7][60])
-{
-    int num_gravacoes = 0;
-    char tempo_formatado[10];
-
-    for ( int i = 0; i < 5; i++ ) {
-        if ( gravacao[i].identificador != 0 ) {
-            formata_delta_tempo(tempo_formatado, 10, (int)difftime(
-                gravacao[i].final, gravacao[i].inicio));
-            snprintf(opcoes[num_gravacoes], 59,
-                "#%d   %d   %05d   %d   %9s   %6s", gravacao[i].identificador,
-                gravacao[i].ultimafase+1, gravacao[i].totalpts,
-                gravacao[i].vidas, gravacao[i].nome_jogador, tempo_formatado);
-            num_gravacoes++;
-        } else {
-            strncpy(opcoes[i], "Espaco livre", 60);
-        }
-    }
-
-    return num_gravacoes;
-}
-
 int distancia_itens(int num_opcoes, int final_y, int inicial_y)
 {
     float y_deltaf;
@@ -177,7 +154,6 @@ int distancia_itens(int num_opcoes, int final_y, int inicial_y)
 
     return y_delta;
 }
-
 
 int exibe_submenu(int ch)
 {

@@ -279,3 +279,25 @@ int limpa_inimigo_pos(inimigo_st ***inimigos, int *inimigos_num, int y, int x)
     /* Não encontrou o inimigo */
     return 1;
 }
+
+int formata_gravacao(gravacao_st gravacao[5], char opcoes[5][60])
+{
+    int num_gravacoes = 0;
+    char tempo_formatado[10];
+
+    for ( int i = 0; i < 5; i++ ) {
+        if ( gravacao[i].identificador != 0 ) {
+            formata_delta_tempo(tempo_formatado, 10, (int)difftime(
+                gravacao[i].final, gravacao[i].inicio));
+            snprintf(opcoes[num_gravacoes], 59,
+                "#%d   %d   %05d   %d   %9s   %6s", gravacao[i].identificador,
+                gravacao[i].ultimafase+1, gravacao[i].totalpts,
+                gravacao[i].vidas, gravacao[i].nome_jogador, tempo_formatado);
+            num_gravacoes++;
+        } else {
+            strncpy(opcoes[i], "Espaco livre", 60);
+        }
+    }
+
+    return num_gravacoes;
+}

@@ -3,6 +3,7 @@
 #include "selecionar_opcoes_posicao.h"
 #include "defines_lolo.h"
 #include "arquivos.h"
+#include "janela_tamanho.h"
 
 #ifdef DEBUG
 #include "debug.h"
@@ -30,7 +31,8 @@
 #define FINAL_GRIDY_MENU_PRINCIPAL 23
 #define TAMANHO_GRIDY_MENU_PRINCIPAL FINAL_GRIDY_MENU_PRINCIPAL - INICIO_GRIDY_MENU_PRINCIPAL
 
-int seleciona_gravacao_salvar(gravacao_st gravacao[5]);
+/* Exibe um menu para sobreescrever alguma gravação */
+int seleciona_gravacao_sobreescrever(gravacao_st gravacao[5]);
 /* Exibe o menu principal */
 int menu_principal(void);
 /* Exibe os Créditos */
@@ -41,15 +43,5 @@ int recordes(void);
 int distancia_itens(int num_opcoes, int final_y, int inicial_y);
 /* Seleciona uma gravação, -1 caso tenha cancelado */
 int seleciona_gravacao(void);
-
-/* Exibe o menu enquanto o jogo está parado. */
-int exibe_menu_pause(void);
-
-/* Processa os retornos (Voltar, Salvar ou Sair) do menu de pause do jogo. */
-int processa_menu_pause(void);
-
-/* Exibe o menu quando acaba o jogo por falta de vidas. */
-int exibe_game_over(void);
-
-/* Processa os retornos (Novo, Carregar ou Sair) do menu game over. */
-int processa_menu_game_over(void);
+/* Exibe um submenu na tela do jogo */
+int exibe_submenu(int ch);
