@@ -39,10 +39,18 @@ int recordes(void)
     int y_delta = distancia_itens(7, 23, 2);
     int y_inicio = 2 + (y_delta / 2);
     char recordes_formatados[5][60];
+    char tempo_formatado[10];
+    recorde_st buffer[5];
 
     exibe_item("Recordes", 0, y_inicio, y_delta, MEIO_X);
 
-    formata_recordes(recordes_formatados);
+    le_arquivo(buffer, sizeof( recorde_st ), 5, PASTA "/" RECORDS_FILE);
+
+    for ( int i = 0; i < 5; i++ ) {
+        formata_delta_tempo(tempo_formatado, 10, (int) (buffer[i].tempo_total));
+        snprintf(recordes_formatados[i], 60, "#%d   %05d   %9s   %6s", i+1,
+            buffer[i].totalpts, buffer[i].nome_jogador, tempo_formatado);
+    }
 
     for ( int i = 0; i < 5; i++ ) {
         exibe_item(recordes_formatados[i], i+1, y_inicio, y_delta, MEIO_X);
@@ -52,58 +60,106 @@ int recordes(void)
         MEIO_X);
 }
 
-int seleciona_gravacao(char *titulo)
+int seleciona_gravacao(void)
 {
-    int y_delta = distancia_itens(7, 23, 2);
-    int y_inicio = 2 + (y_delta / 2);
+    int num_gravacao = 0;
+    int ret;
+    int y_delta = distancia_itens(8, 23, 4);
+    int y_inicio = 4 + (y_delta / 2);
     char opcoes[6][60];
     char tempo_formatado[10];
     gravacao_st buffer[5];
 
     le_arquivo(buffer, sizeof( gravacao_st ), 5, PASTA "/" SAVE_FILE);
 
-    for ( int i = 0; i < 5; i++ ) {
-        formata_delta_tempo(tempo_formatado, 10, (int)buffer[i].final);
-        snprintf(opcoes[i], 59, "#%d   %05d   %d   %9s   %6s",
-            buffer[i].ultimafase, buffer[i].totalpts, buffer[i].vidas,
-            buffer[i].nome_jogador, tempo_formatado);
+    num_gravacao = formata_gravacao(buffer, opcoes);
+
+    strncpy(opcoes[num_gravacao], "Voltar para o menu principal", 60);
+
+    do {
+        exibe_item("Selecione um save", 0, y_inicio, y_delta, MEIO_X);
+        exibe_item("id nivel  pts  vidas    nome      tempo  ", 1, y_inicio,
+            y_delta, MEIO_X);
+
+        ret =  seleciona_opcoes((char **) opcoes, num_gravacao+1,
+            y_inicio + (y_delta * 2), y_delta, MEIO_X, 60);
+
+        if ( ret == KEY_RESIZE ) {
+            if ( !tamanho_valido() ) {
+                espera_tamanho_valido();
+                desenha_borda(stdscr);
+            } else {
+                resize_term(JANELA_MAX_Y, JANELA_MAX_X);
+            }
+        }
+    } while ( ret < 0 || ret > num_gravacao );
+
+    clear();
+
+    if ( ret == num_gravacao ) {
+        return -1;
     }
 
+    return ret;
+}
+
+int seleciona_gravacao_salvar(gravacao_st gravacao[5])
+{
+    int ret;
+    int y_delta = distancia_itens(8, 23, 4);
+    int y_inicio = 4 + (y_delta / 2);
+    char opcoes[6][60];
+
+    formata_gravacao(gravacao, opcoes);
     strncpy(opcoes[5], "Cancelar", 60);
 
-    exibe_item(titulo, 0, y_inicio, y_delta, MEIO_X);
+    clear();
+    desenha_borda(stdscr);
 
-    return seleciona_opcoes((char **) opcoes, 6, y_inicio + y_delta, y_delta,
-        MEIO_X, 60);
+    do {
+        exibe_item("Selecione o save que deseja sobreescrever", 0, y_inicio,
+            y_delta, MEIO_X);
+        exibe_item("id nivel  pts  vidas    nome      tempo  ", 1, y_inicio,
+            y_delta, MEIO_X);
+
+        ret = seleciona_opcoes((char **) opcoes, 6, y_inicio + (y_delta * 2),
+            y_delta, MEIO_X, 60);
+
+        if ( ret == KEY_RESIZE ) {
+            if ( !tamanho_valido() ) {
+                espera_tamanho_valido();
+                desenha_borda(stdscr);
+            } else {
+                resize_term(JANELA_MAX_Y, JANELA_MAX_X);
+            }
+        }
+    } while ( ret < 0 || ret > 6 );
+
+    clear();
+
+    return ret;
 }
 
-void formata_gravacao(char str[5][60])
+int formata_gravacao(gravacao_st gravacao[5], char opcoes[7][60])
 {
+    int num_gravacoes = 0;
     char tempo_formatado[10];
-    gravacao_st buffer[5];
-
-    le_arquivo(&buffer, sizeof( gravacao_st ), 5, PASTA "/" SAVE_FILE);
 
     for ( int i = 0; i < 5; i++ ) {
-        formata_delta_tempo(tempo_formatado, 10, (int)buffer[i].final);
-        snprintf(str[i], 59, "#%d   %05d   %d   %9s   %6s", buffer[i].ultimafase,
-            buffer[i].totalpts, buffer[i].vidas, buffer[i].nome_jogador,
-            tempo_formatado);
+        if ( gravacao[i].identificador != 0 ) {
+            formata_delta_tempo(tempo_formatado, 10, (int)difftime(
+                gravacao[i].final, gravacao[i].inicio));
+            snprintf(opcoes[num_gravacoes], 59,
+                "#%d   %d   %05d   %d   %9s   %6s", gravacao[i].identificador,
+                gravacao[i].ultimafase+1, gravacao[i].totalpts,
+                gravacao[i].vidas, gravacao[i].nome_jogador, tempo_formatado);
+            num_gravacoes++;
+        } else {
+            strncpy(opcoes[i], "Espaco livre", 60);
+        }
     }
-}
 
-void formata_recordes(char str[5][60])
-{
-    char tempo_formatado[10];
-    recorde_st buffer[5];
-
-    le_arquivo(buffer, sizeof( recorde_st ), 5, PASTA "/" RECORDS_FILE);
-
-    for ( int i = 0; i < 5; i++ ) {
-        formata_delta_tempo(tempo_formatado, 10, (int) (buffer[i].tempo_total));
-        snprintf(str[i], 60, "#%d   %05d   %9s   %6s", i+1, buffer[i].totalpts,
-            buffer[i].nome_jogador, tempo_formatado);
-    }
+    return num_gravacoes;
 }
 
 int distancia_itens(int num_opcoes, int final_y, int inicial_y)
@@ -123,78 +179,52 @@ int distancia_itens(int num_opcoes, int final_y, int inicial_y)
 }
 
 
-int exibe_menu_pause(void)
+int exibe_submenu(int ch)
 {
     /* Desenha uma janela sobre o jogo atual */
-    WINDOW *w = newwin(16,32,5,12);
-    box( w, 0, 0 );
+    WINDOW *w = newwin(16, 32, 5, 12);
+    box(w, 0, 0);
     wrefresh(w);
 
-    char *opcoes[] = { "Continuar Jogando",
-                       "Salvar Jogo",
-                       "Voltar para o Menu"};
     int y_delta;
+    int ret;
+    char *titulo;
+    char *opcoes[3];
+
+    if ( ch == ESC ) {
+        titulo = " == LoLo's PAUSE ==";
+        opcoes[0] = "Continuar Jogando";
+        opcoes[1] = "Salvar Jogo";
+    } else {
+        titulo = "==  GAME OVER  ==";
+        opcoes[0] = "Novo Jogo";
+        opcoes[1] = "Carregar Jogo";
+    }
+
+    opcoes[2] = "Voltar para o Menu";
 
     /* Distância no eixo y entre um item e outro */
     y_delta = distancia_itens(3, 15, 5);
 
-    exibe_item(" == LoLo's PAUSE ==", 0, 6, 0, 27);
+    do {
+        exibe_item(titulo, 0, 6, 0, 27);
 
-    /* Retorna a opção selecionada */
-    return seleciona_opcoes(opcoes, 3, 10, y_delta, 27, 0);
-}
+        ret = seleciona_opcoes(opcoes, 3, 10, y_delta, 27, 0);
 
-int processa_menu_pause(void)
-{
-    int comando_menu_pause = exibe_menu_pause();
+        if ( ret == KEY_RESIZE ) {
+            wclear(stdscr);
+            if ( !tamanho_valido() ) {
+                espera_tamanho_valido();
+            } else {
+                resize_term(JANELA_MAX_Y, JANELA_MAX_X);
+            }
 
-    switch ( comando_menu_pause ) {
-        case OPCAO_CONTINUAR_JOGANDO:
-            /* Não faz nada. */
-            break;
-        case OPCAO_SALVAR:
-            /* TODO: Opcao salvar. */
-            //seleciona_gravacao("Salvar Jogo");
-            break;
-        case OPCAO_SAIR:
-            break;
-            /* Sair subrotina novojogo. */
-    }
+            wresize(w, 16, 32);
+            wrefresh(stdscr);
+            wrefresh(w);
+            box(w, 0, 0);
+        }
+    } while ( ret < 0 || ret > 2 );
 
-    return comando_menu_pause;
-}
-
-int exibe_game_over(void)
-{
-    /* Desenha uma janela sobre o jogo atual */
-    WINDOW *w = newwin(16,32,5,12);
-    box( w, 0, 0 );
-    wrefresh(w);
-
-    char *opcoes[] = { "Novo Jogo", "Carregar Jogo", "Voltar para o Menu"};
-    int y_delta;
-
-    /* Distância no eixo y entre um item e outro */
-    y_delta = distancia_itens(3, 15, 5);
-
-    exibe_item("==  GAME OVER  ==", 0, 6, 0, 27);
-
-    /* Retorna a opção selecionada */
-    return seleciona_opcoes(opcoes, 3, 10, y_delta, 27, 0);
-}
-
-int processa_menu_game_over(void)
-{
-    int comando_menu_pause = exibe_game_over();
-
-    switch ( comando_menu_pause ) {
-        case OPCAO_NOVO_JOGO:
-            /* TODO: Implementar. */
-            break;
-        case OPCAO_SAIR:
-            break;
-            /* Sair subrotina novojogo. */
-    }
-
-    return comando_menu_pause;
+    return ret;
 }

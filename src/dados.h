@@ -14,6 +14,12 @@
 #define ATUALIZA_GANHOU  8
 #define ATUALIZA_ERRO    16
 
+/* Retorna quantas gravações existem */
+int num_gravacoes(gravacao_st gravacao[5]);
+/* Retorna o maior id de gravacao */
+int maior_id(gravacao_st gravacao[5]);
+/* Retorna true se o id não estiver sendo usado */
+int id_disponivel(gravacao_st gravacao[5], int id);
 /*
  * Adiciona um inimigo, alocado dinamicamente, para uma lista alocada
  * dinamicamente de inimigos

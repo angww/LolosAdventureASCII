@@ -2,13 +2,31 @@
 
 int novojogo(void)
 {
-    /* TODO: Obter o nome */
-
+    gravacao_st tmp_gravacao[5];
     gravacao_st gravacao;
+    int id;
 
-    /* Exemplo */
+    /*
+     * O id será o maior incermentado por um, se o maior for 999 (limite),
+     * procura o menor id disponível
+     */
+    le_arquivo(tmp_gravacao, sizeof (gravacao_st), 5, PASTA "/" SAVE_FILE);
+    id = maior_id(tmp_gravacao);
+    if ( id == 999 ) {
+        id = 1;
+
+        while ( !id_disponivel(tmp_gravacao, id) ) {
+            id++;
+        }
+    } else {
+        id++;
+    }
+
+    /* TODO: Obter o nome */
     strncpy(gravacao.nome_jogador, "Exemplo", 9);
-    gravacao.totalpts = 9090;
+
+    gravacao.identificador = id;
+    gravacao.totalpts = 0;
     gravacao.ultimafase = 0;
     gravacao.vidas = 3;
     gravacao.inicio = time(NULL);
@@ -22,22 +40,37 @@ int novojogo(void)
 int carregarjogo(void)
 {
     /* Ainda incompleto, próximo commit deverá conter as novas funções */
-    /*
     gravacao_st gravacao;
     int ret;
 
     ret = seleciona_gravacao();
-    */
 
     /* Sair */
-    /*
     if ( ret == -1 ) {
         return 0;
     }
 
     le_arquivo_pos(&gravacao, sizeof (gravacao_st), PASTA "/" SAVE_FILE, ret);
     joga_mapas(&gravacao);
-    */
+
+    return 0;
+}
+
+int salvarjogo(gravacao_st *gravacao)
+{
+    /* Número de gravações já existentes */
+    gravacao_st tmp_gravacao[5];
+    le_arquivo(tmp_gravacao, sizeof (gravacao_st), 5, PASTA "/" SAVE_FILE);
+    int ngravacoes = num_gravacoes(tmp_gravacao);
+
+    /* Se for 5 então temos que sobreescrever alguma */
+    if ( ngravacoes == 5 ) {
+        seleciona_gravacao_salvar(tmp_gravacao);
+    /* Se 0-4 então podemos salvar, salvaremos na última posição livre */
+    } else if ( ngravacoes >= 0 && ngravacoes < 5 ) {
+        escreve_arquivo_pos(gravacao, sizeof (gravacao_st), PASTA "/" SAVE_FILE,
+            ngravacoes);
+    }
 
     return 0;
 }
@@ -78,7 +111,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
     lolo_st lolo;
     int ch = 0;
     int ret = 0;
-    int comando_menu_pause = 0;
+    int ret_submenu = 0;
 
     /* Carrega as informações do último nível e a posição atual */
     lolo.vidas = gravacao->vidas;
@@ -145,7 +178,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 
             /* TODO: */
             if ( ret & ATUALIZA_GANHOU ) {
-                comando_menu_pause = OPCAO_SAIR;
+                ret_submenu = OPCAO_SAIR;
                 break;
             }
 
@@ -157,7 +190,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
             /* TODO: gerenciar melhor o erro */
             if ( movimenta_inimigos(mapa, &lolo, y_inicio_info, y_delta_info) ) {
                 ch = GAME_OVER;
-                comando_menu_pause = OPCAO_SAIR;
+                ret_submenu = OPCAO_SAIR;
             }
 
             if ( lolo.vidas < 1 ) {
@@ -176,29 +209,35 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 
         if (ch == ESC) {
             tmp = time(NULL);
-            comando_menu_pause = processa_menu_pause();
+            ret_submenu = exibe_submenu(ch);
             altera_inicio(gravacao, tmp);
 
-            /* Redesenha mapa atualizado */
+            if ( ret_submenu == 1 ) {
+                salvarjogo(gravacao);
+            } else if ( ret_submenu == 2 ) {
+                break;
+            }
+
+            /* Redesenha mapa */
             exibe_jogo(&lolo, gravacao, mapa, y_delta_info, y_inicio_info);
         }
 
         if (ch == GAME_OVER) {
-            comando_menu_pause = processa_menu_game_over();
+            ret_submenu = exibe_submenu(ch);
         }
-    } while (comando_menu_pause != OPCAO_SAIR);
+    } while (ret_submenu != OPCAO_SAIR);
 
     /* Limpa os inimigos remanescentes */
     limpa_inimigos(&(mapa->inimigos), mapa->inimigos_num);
     mapa->inimigos_num = 0;
 
-    /* Atualiza os dados, TODO: não atualizar se usuário deseja salvar */
+    /* Atualiza os dados para o próximo mapa */
     gravacao->vidas = lolo.vidas;
     gravacao->totalpts = lolo.pontos;
     gravacao->final = time(NULL);
 
     /* TODO: outros retorno, por enquanto não há necessidade */
-    return (lolo.vidas == 0 ? 1 : 0) || (comando_menu_pause == OPCAO_SAIR);
+    return (lolo.vidas == 0 ? 1 : 0) || (ret_submenu == OPCAO_SAIR);
 }
 
 void altera_inicio(gravacao_st *gravacao, time_t inicio)

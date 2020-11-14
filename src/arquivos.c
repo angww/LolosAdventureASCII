@@ -160,6 +160,94 @@ int le_arquivo(void *ptr, size_t size, int nmemb, char *filename)
     return tenta_fechar(fp, filename, errsv);
 }
 
+int le_arquivo_pos(void *ptr, size_t size, char *filename, int pos)
+{
+    int errsv = SUCCESS;
+    FILE *fp;
+
+    fp = fopen(filename, "rb");
+    if ( fp == NULL ) {
+        errsv = errno;
+
+        #ifdef DEBUG
+            debug_message("Erro: %s: %s", strerror(errno), filename);
+        #endif
+
+        return errsv;
+    }
+
+    fseek(fp, size * pos, SEEK_SET);
+
+    if ( fread(ptr, size, 1, fp) != 1 ) {
+        errsv = errno;
+
+        #ifdef DEBUG
+            /* Erro na leitura ou não leu tudo */
+            if ( errsv != SUCCESS ) {
+                debug_message("Erro: %s: %s", strerror(errno), filename);
+            } else {
+                debug_message("Erro: Nao foi possivel ler arquivo: %s", filename);
+            }
+        #endif
+
+        /*
+         * Se foi possível ler, pelo menos uma parte do arquivo, errsv não é
+         * modificado, -1 é um código inexistente, Unknown Error
+         */
+        if ( errsv == SUCCESS) {
+            errsv = -1;
+        }
+
+        return tenta_fechar(fp, filename, errsv);
+    }
+
+    return tenta_fechar(fp, filename, errsv);
+}
+
+int escreve_arquivo_pos(void *ptr, size_t size, char *filename, int pos)
+{
+    int errsv = SUCCESS;
+    FILE *fp;
+
+    fp = fopen(filename, "rb+");
+    if ( fp == NULL ) {
+        errsv = errno;
+
+        #ifdef DEBUG
+            debug_message("Erro: %s: %s", strerror(errno), filename);
+        #endif
+
+        return errsv;
+    }
+
+    fseek(fp, size * pos, SEEK_SET);
+
+    if ( fwrite(ptr, size, 1, fp) != 1 ) {
+        errsv = errno;
+
+        #ifdef DEBUG
+            /* Erro ao escrever */
+            if ( errsv != SUCCESS ) {
+                debug_message("Erro: %s: %s", strerror(errno), filename);
+            } else {
+                debug_message("Erro: Nao foi possivel escrever no arquivo: %s", filename);
+            }
+        #endif
+
+        /*
+         * Se foi possível ler, pelo menos uma parte do arquivo, errsv não é
+         * modificado, -1 é um código inexistente, Unknown Error
+         */
+        if ( errsv == SUCCESS) {
+            errsv = -1;
+        }
+
+        return tenta_fechar(fp, filename, errsv);
+    }
+
+    return tenta_fechar(fp, filename, errsv);
+}
+
 int escreve_arquivo(void *ptr, size_t size, int nmemb, char *filename)
 {
     int errsv = SUCCESS;

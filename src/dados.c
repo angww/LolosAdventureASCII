@@ -6,7 +6,7 @@ void limpa_save(gravacao_st *gravacao)
     gravacao->totalpts = 0;
     gravacao->ultimafase = 0;
     gravacao->vidas = 0;
-    
+
     for ( int i = 0; i < 8; i++ )
         gravacao->nome_jogador[i] = '=';
     gravacao->nome_jogador[8] = '\0';
@@ -33,6 +33,45 @@ void grava_inicial_fake_record(recorde_st *recorde)
         recorde[i].tempo_total = tmp[i];
         strncpy(recorde[i].nome_jogador, nomes[i], 9);
     }
+}
+
+int maior_id(gravacao_st gravacao[5])
+{
+    int id = -1;
+    int id_tmp;
+
+    for ( int i = 0; i < 5; i++ ) {
+        id_tmp = gravacao[i].identificador;
+        if ( id_tmp > id ) {
+            id = id_tmp;
+        }
+    }
+
+    return id;
+}
+
+int id_disponivel(gravacao_st gravacao[5], int id)
+{
+    for ( int i = 0; i < 5; i++ ) {
+        if ( gravacao[i].identificador == id ) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int num_gravacoes(gravacao_st gravacao[5])
+{
+    int ngravacoes = 0;
+
+    for ( int i = 0; i < 5; i++ ) {
+        if ( gravacao[i].identificador ) {
+            ngravacoes++;
+        }
+    }
+
+    return ngravacoes;
 }
 
 void exibe_todos_dados(gravacao_st *gravacao, mapa_st *mapa, lolo_st *lolo,

@@ -33,6 +33,10 @@
 
 #define NUM_NIVEIS 4
 
+/* Lê n bytes de um arquivo em determinada posição * size */
+int le_arquivo_pos(void *ptr, size_t size, char *filename, int pos);
+/* Escreve n bytes de um arquivo em determinada posição * size */
+int escreve_arquivo_pos(void *ptr, size_t size, char *filename, int pos);
 /* Carrega um mapa determinado por filename */
 int carrega_arquivo_mapa(mapa_st *mapa, char *filename);
 /*
