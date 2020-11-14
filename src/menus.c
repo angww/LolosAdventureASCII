@@ -15,7 +15,7 @@ int menu_principal(void)
 
     /* Retorna a opção selecionada */
     return seleciona_opcoes(opcoes, 5, INICIO_GRIDY_MENU_PRINCIPAL, y_delta,
-        MEIO_X);
+        MEIO_X, 0);
 }
 
 int creditos(void)
@@ -36,25 +36,74 @@ int creditos(void)
 
 int recordes(void)
 {
-    char recorde_formatado[60], tempo_formatado[10];
-    recorde_st buffer[5];
     int y_delta = distancia_itens(7, 23, 2);
     int y_inicio = 2 + (y_delta / 2);
+    char recordes_formatados[5][60];
 
     exibe_item("Recordes", 0, y_inicio, y_delta, MEIO_X);
 
-    le_arquivo(&buffer, sizeof( gravacao_st ), 5, PASTA "/" RECORDS_FILE);
+    formata_recordes(recordes_formatados);
 
-    for (int i = 0; i < 5; i++ ) {
-        formata_delta_tempo(tempo_formatado, 10, (int) (buffer[i].tempo_total));
-        sprintf(recorde_formatado, "#%04d   %05d   %9s   %6s", i,
-                buffer[i].totalpts, buffer[i].nome_jogador,
-                tempo_formatado);
-
-        exibe_item(recorde_formatado, i+1, y_inicio, y_delta, MEIO_X);
+    for ( int i = 0; i < 5; i++ ) {
+        exibe_item(recordes_formatados[i], i+1, y_inicio, y_delta, MEIO_X);
     }
 
-    return seleciona_opcao("Voltar ao menu principal", y_inicio + (y_delta * 6), MEIO_X);
+    return seleciona_opcao("Voltar ao menu principal", y_inicio + (y_delta * 6),
+        MEIO_X);
+}
+
+int seleciona_gravacao(char *titulo)
+{
+    int y_delta = distancia_itens(7, 23, 2);
+    int y_inicio = 2 + (y_delta / 2);
+    char opcoes[6][60];
+    char tempo_formatado[10];
+    gravacao_st buffer[5];
+
+    le_arquivo(buffer, sizeof( gravacao_st ), 5, PASTA "/" SAVE_FILE);
+
+    for ( int i = 0; i < 5; i++ ) {
+        formata_delta_tempo(tempo_formatado, 10, (int)buffer[i].final);
+        snprintf(opcoes[i], 59, "#%d   %05d   %d   %9s   %6s",
+            buffer[i].ultimafase, buffer[i].totalpts, buffer[i].vidas,
+            buffer[i].nome_jogador, tempo_formatado);
+    }
+
+    strncpy(opcoes[5], "Cancelar", 60);
+
+    exibe_item(titulo, 0, y_inicio, y_delta, MEIO_X);
+
+    return seleciona_opcoes((char **) opcoes, 6, y_inicio + y_delta, y_delta,
+        MEIO_X, 60);
+}
+
+void formata_gravacao(char str[5][60])
+{
+    char tempo_formatado[10];
+    gravacao_st buffer[5];
+
+    le_arquivo(&buffer, sizeof( gravacao_st ), 5, PASTA "/" SAVE_FILE);
+
+    for ( int i = 0; i < 5; i++ ) {
+        formata_delta_tempo(tempo_formatado, 10, (int)buffer[i].final);
+        snprintf(str[i], 59, "#%d   %05d   %d   %9s   %6s", buffer[i].ultimafase,
+            buffer[i].totalpts, buffer[i].vidas, buffer[i].nome_jogador,
+            tempo_formatado);
+    }
+}
+
+void formata_recordes(char str[5][60])
+{
+    char tempo_formatado[10];
+    recorde_st buffer[5];
+
+    le_arquivo(buffer, sizeof( recorde_st ), 5, PASTA "/" RECORDS_FILE);
+
+    for ( int i = 0; i < 5; i++ ) {
+        formata_delta_tempo(tempo_formatado, 10, (int) (buffer[i].tempo_total));
+        snprintf(str[i], 60, "#%d   %05d   %9s   %6s", i+1, buffer[i].totalpts,
+            buffer[i].nome_jogador, tempo_formatado);
+    }
 }
 
 int distancia_itens(int num_opcoes, int final_y, int inicial_y)
@@ -81,7 +130,9 @@ int exibe_menu_pause(void)
     box( w, 0, 0 );
     wrefresh(w);
 
-    char *opcoes[] = { " Continuar Jogando", "Salvar Jogo", "Voltar para o Menu"};
+    char *opcoes[] = { "Continuar Jogando",
+                       "Salvar Jogo",
+                       "Voltar para o Menu"};
     int y_delta;
 
     /* Distância no eixo y entre um item e outro */
@@ -90,7 +141,7 @@ int exibe_menu_pause(void)
     exibe_item(" == LoLo's PAUSE ==", 0, 6, 0, 27);
 
     /* Retorna a opção selecionada */
-    return seleciona_opcoes(opcoes, 3, 10, y_delta, 27);
+    return seleciona_opcoes(opcoes, 3, 10, y_delta, 27, 0);
 }
 
 int processa_menu_pause(void)
@@ -103,6 +154,7 @@ int processa_menu_pause(void)
             break;
         case OPCAO_SALVAR:
             /* TODO: Opcao salvar. */
+            //seleciona_gravacao("Salvar Jogo");
             break;
         case OPCAO_SAIR:
             break;
@@ -128,7 +180,7 @@ int exibe_game_over(void)
     exibe_item("==  GAME OVER  ==", 0, 6, 0, 27);
 
     /* Retorna a opção selecionada */
-    return seleciona_opcoes(opcoes, 3, 10, y_delta, 27);
+    return seleciona_opcoes(opcoes, 3, 10, y_delta, 27, 0);
 }
 
 int processa_menu_game_over(void)

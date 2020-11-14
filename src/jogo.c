@@ -21,10 +21,9 @@ int novojogo(void)
 
 int carregarjogo(void)
 {
-    /* TODO: Menu para carregar os saves */
+    /* TODO: Carregar save */
 
-    /* Apenas para não repetir as definições */
-    novojogo();
+    seleciona_gravacao("Carregar Jogo");
 
     return 0;
 }

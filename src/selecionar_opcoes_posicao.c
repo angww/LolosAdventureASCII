@@ -3,7 +3,7 @@
 #include "janela_tamanho.h"
 
 int seleciona_opcoes(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
-    int x_meio)
+    int x_meio, int modo)
 {
     /* Primeira opção é selecionada por padrão */
     int opcao = 0;
@@ -11,7 +11,16 @@ int seleciona_opcoes(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
     int mudanca = MUDANCA_OPCAO;
 
     /* Exibe todos os itens */
-    exibe_itens(opcoes, num_opcoes, y_inicio, y_delta, x_meio);
+    if ( modo < 0 ) {
+        return -1;
+    } else if ( modo ) {
+        for ( int i = 0; i < num_opcoes; i++ ) {
+            exibe_item((((char *) (opcoes)) + (i * modo)), i, y_inicio, y_delta,
+                x_meio);
+        }
+    } else {
+        exibe_itens(opcoes, num_opcoes, y_inicio, y_delta, x_meio);
+    }
 
     /* Execta o loop até que uma opção seja selecionada */
     do {
@@ -21,7 +30,12 @@ int seleciona_opcoes(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
          */
         if ( mudanca == MUDANCA_OPCAO ) {
             /* Imprime apenas o item com hightlight */
-            exibe_opcao(opcoes[opcao], opcao, y_inicio, y_delta, x_meio);
+            if ( modo ) {
+                exibe_opcao(((char *) opcoes) + (opcao * modo), opcao, y_inicio,
+                    y_delta, x_meio);
+            } else {
+                exibe_opcao(opcoes[opcao], opcao, y_inicio, y_delta, x_meio);
+            }
         }
 
         /* Aplica as mudanças à stdscr */
@@ -37,7 +51,12 @@ int seleciona_opcoes(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
         switch ( ch ) {
             case KEY_UP:
                 /* Remove highlight que estava no item anterior */
-                exibe_item(opcoes[opcao], opcao, y_inicio, y_delta, x_meio);
+                if ( modo ) {
+                    exibe_item(((char *) opcoes) + (opcao * modo), opcao,
+                        y_inicio, y_delta, x_meio);
+                } else {
+                    exibe_item(opcoes[opcao], opcao, y_inicio, y_delta, x_meio);
+                }
                 /*
                  * Indica que houve mudança na seleção, quando o loop for
                  * executado novamente irá imprimir o item selecionado com o
@@ -55,7 +74,12 @@ int seleciona_opcoes(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
 
                 break;
             case KEY_DOWN:
-                exibe_item(opcoes[opcao], opcao, y_inicio, y_delta, x_meio);
+                if ( modo ) {
+                    exibe_item(((char *) opcoes) + (opcao * modo), opcao,
+                        y_inicio, y_delta, x_meio);
+                } else {
+                    exibe_item(opcoes[opcao], opcao, y_inicio, y_delta, x_meio);
+                }
                 mudanca = MUDANCA_OPCAO;
 
                 /* Se a última opção era a última, seleciona a primeira */
@@ -124,7 +148,7 @@ int seleciona_opcao(char *opcao, int y_pos, int x_meio)
     return ch;
 }
 
-void exibe_itens(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
+void exibe_itens(char *opcoes[], int num_opcoes, int y_inicio, int y_delta,
     int x_meio)
 {
     /* Variável auxiliar */

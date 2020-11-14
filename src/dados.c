@@ -6,7 +6,11 @@ void limpa_save(gravacao_st *gravacao)
     gravacao->totalpts = 0;
     gravacao->ultimafase = 0;
     gravacao->vidas = 0;
-    gravacao->nome_jogador[0] = '\0';
+    
+    for ( int i = 0; i < 8; i++ )
+        gravacao->nome_jogador[i] = '=';
+    gravacao->nome_jogador[8] = '\0';
+
     gravacao->inicio = 0;
     gravacao->final = 0;
 }
@@ -27,7 +31,7 @@ void grava_inicial_fake_record(recorde_st *recorde)
     for ( int i = 0; i < 5; i++ ) {
         recorde[i].totalpts = pts[i];
         recorde[i].tempo_total = tmp[i];
-        strncpy(recorde[i].nome_jogador, nomes[i], 9);      
+        strncpy(recorde[i].nome_jogador, nomes[i], 9);
     }
 }
 

@@ -38,6 +38,15 @@ int creditos(void);
 int recordes(void);
 /* Calcula a distância entre um item e outro */
 int distancia_itens(int num_opcoes, int final_y, int inicial_y);
+/* Formata o recorde */
+void formata_recordes(char str[5][60]);
+/* Formata a gravação */
+void formata_gravacao(char str[5][60]);
+/*
+ * Seleciona uma gravação, título é o título a ser exibido, com isso podemos
+ * usar seleciona_gravacao tanto para salvar quanto para carregar
+ */
+int seleciona_gravacao(char *titulo);
 
 /* Exibe o menu enquanto o jogo está parado. */
 int exibe_menu_pause(void);
