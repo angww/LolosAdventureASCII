@@ -106,10 +106,7 @@ int verifica_arquivos(void)
         }
 
         recorde_st tmp_recorde[5];
-        grava_inicial_fake_record(&tmp_recorde);
-        /* for ( int i = 0; i < 5; i++ ) {
-            limpa_record(&tmp_recorde[i]);
-        } */
+        grava_inicial_fake_record(tmp_recorde);
 
         ret = escreve_arquivo(tmp_recorde, sizeof (recorde_st), 5, PASTA "/" RECORDS_FILE);
         if ( ret ) {
@@ -150,7 +147,7 @@ int le_arquivo(void *ptr, size_t size, int nmemb, char *filename)
         #endif
 
         /*
-         * Se foi possível escrever, pelo menos uma parte do arquivo, errsv não é
+         * Se foi possível ler, pelo menos uma parte do arquivo, errsv não é
          * modificado, -1 é um código inexistente, Unknown Error
          */
         if ( errsv == SUCCESS) {
@@ -192,7 +189,7 @@ int escreve_arquivo(void *ptr, size_t size, int nmemb, char *filename)
         #endif
 
         /*
-         * Se foi possível ler, pelo menos uma parte do arquivo, errsv não é
+         * Se foi possível escrever, pelo menos uma parte do arquivo, errsv não é
          * modificado, -1 é um código inexistente, Unknown Error
          */
         if ( errsv == SUCCESS) {

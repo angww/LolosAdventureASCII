@@ -11,7 +11,7 @@
 #define ATUALIZA_VIDA    1
 #define ATUALIZA_CORACAO 2
 #define ATUALIZA_INIMIGO 4
-#define ATUALIZA_BAU     8
+#define ATUALIZA_GANHOU  8
 #define ATUALIZA_ERRO    16
 
 /*

@@ -23,11 +23,8 @@
 
 #define SUCCESS 0
 
-/*
- * Permite a leitura e escrita para usuário, para grupo e outros permite a
- * leitura
- */
-#define PERMISSOES S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+/* Permissões mais baixas resultam em EACCESS */
+#define PERMISSOES 0777
 
 #define NIVEIS { NIVEIS_PASTA "/nivel1.mapa",\
                 NIVEIS_PASTA "/nivel2.mapa",\

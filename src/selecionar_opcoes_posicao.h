@@ -7,9 +7,6 @@
 #define MUDANCA_NENHUMA 0
 #define MUDANCA_OPCAO   1
 
-/* Para submenu define keychar ESC = 27 */
-#define ESC_KEY         27
-
 /* Retorna a opção selecionada ou KEY_RESIZED */
 int seleciona_opcoes(char **opcoes, int num_opcoes, int y_inicio, int y_delta,
     int x_meio);

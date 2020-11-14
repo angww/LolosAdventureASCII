@@ -1,5 +1,4 @@
 #include "menus.h"
-#include "arquivos.h"
 
 int menu_principal(void)
 {
@@ -37,34 +36,25 @@ int creditos(void)
 
 int recordes(void)
 {
-    char *recordes[6] = { "Recordes" };
-    
-    char recorde_formatado[100], tempo_formatado[10];
-    struct tm *tempo = NULL;
+    char recorde_formatado[60], tempo_formatado[10];
     recorde_st buffer[5];
-
-    le_arquivo(&buffer, sizeof(buffer), 1, PASTA "/" RECORDS_FILE);
-
-    
-    for (int i = 0; i < 5; i++ ) {
-        
-        tempo =  localtime(&buffer[i].tempo_total);
-        sprintf(tempo_formatado, "%d:%02d", tempo->tm_min, tempo->tm_sec);
-
-        sprintf(recorde_formatado, "#000%d  %3d  \t%s \t%s", i,
-                buffer[i].totalpts, buffer[i].nome_jogador,
-                tempo_formatado);
-        recordes[i+1] = strdup(recorde_formatado);
-
-    }
- 
-    char *opcao = "Voltar ao menu principal";
     int y_delta = distancia_itens(7, 23, 2);
     int y_inicio = 2 + (y_delta / 2);
 
-    exibe_itens(recordes, 6, y_inicio, y_delta, MEIO_X);
+    exibe_item("Recordes", 0, y_inicio, y_delta, MEIO_X);
 
-    return seleciona_opcao(opcao, y_inicio + (y_delta * 6), MEIO_X);
+    le_arquivo(&buffer, sizeof( gravacao_st ), 5, PASTA "/" RECORDS_FILE);
+
+    for (int i = 0; i < 5; i++ ) {
+        formata_delta_tempo(tempo_formatado, 10, (int) (buffer[i].tempo_total));
+        sprintf(recorde_formatado, "#%04d   %05d   %9s   %6s", i,
+                buffer[i].totalpts, buffer[i].nome_jogador,
+                tempo_formatado);
+
+        exibe_item(recorde_formatado, i+1, y_inicio, y_delta, MEIO_X);
+    }
+
+    return seleciona_opcao("Voltar ao menu principal", y_inicio + (y_delta * 6), MEIO_X);
 }
 
 int distancia_itens(int num_opcoes, int final_y, int inicial_y)
@@ -84,12 +74,12 @@ int distancia_itens(int num_opcoes, int final_y, int inicial_y)
 }
 
 
-int exibe_menu_pause() {
-
+int exibe_menu_pause(void)
+{
     /* Desenha uma janela sobre o jogo atual */
     WINDOW *w = newwin(16,32,5,12);
-    box( w, 0, 0 ); 
-    wrefresh(w); 
+    box( w, 0, 0 );
+    wrefresh(w);
 
     char *opcoes[] = { " Continuar Jogando", "Salvar Jogo", "Voltar para o Menu"};
     int y_delta;
@@ -103,19 +93,18 @@ int exibe_menu_pause() {
     return seleciona_opcoes(opcoes, 3, 10, y_delta, 27);
 }
 
-
-int processa_menu_pause() {
-
+int processa_menu_pause(void)
+{
     int comando_menu_pause = exibe_menu_pause();
 
     switch ( comando_menu_pause ) {
         case OPCAO_CONTINUAR_JOGANDO:
             /* Não faz nada. */
-            break; 
+            break;
         case OPCAO_SALVAR:
             /* TODO: Opcao salvar. */
             break;
-        case OPCAO_SAIR: 
+        case OPCAO_SAIR:
             break;
             /* Sair subrotina novojogo. */
     }
@@ -123,12 +112,12 @@ int processa_menu_pause() {
     return comando_menu_pause;
 }
 
-int exibe_game_over() {
-
+int exibe_game_over(void)
+{
     /* Desenha uma janela sobre o jogo atual */
     WINDOW *w = newwin(16,32,5,12);
-    box( w, 0, 0 ); 
-    wrefresh(w); 
+    box( w, 0, 0 );
+    wrefresh(w);
 
     char *opcoes[] = { "Novo Jogo", "Carregar Jogo", "Voltar para o Menu"};
     int y_delta;
@@ -140,18 +129,17 @@ int exibe_game_over() {
 
     /* Retorna a opção selecionada */
     return seleciona_opcoes(opcoes, 3, 10, y_delta, 27);
-
 }
 
-int processa_menu_game_over() {
- 
+int processa_menu_game_over(void)
+{
     int comando_menu_pause = exibe_game_over();
 
     switch ( comando_menu_pause ) {
         case OPCAO_NOVO_JOGO:
             /* TODO: Implementar. */
             break;
-        case OPCAO_SAIR: 
+        case OPCAO_SAIR:
             break;
             /* Sair subrotina novojogo. */
     }

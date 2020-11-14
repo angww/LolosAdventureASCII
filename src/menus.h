@@ -2,6 +2,7 @@
 
 #include "selecionar_opcoes_posicao.h"
 #include "defines_lolo.h"
+#include "arquivos.h"
 
 #ifdef DEBUG
 #include "debug.h"
@@ -37,7 +38,6 @@ int creditos(void);
 int recordes(void);
 /* Calcula a distância entre um item e outro */
 int distancia_itens(int num_opcoes, int final_y, int inicial_y);
-
 
 /* Exibe o menu enquanto o jogo está parado. */
 int exibe_menu_pause(void);
