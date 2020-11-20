@@ -13,6 +13,8 @@
 #define ATUALIZA_INIMIGO 4
 #define ATUALIZA_GANHOU  8
 #define ATUALIZA_ERRO    16
+#define ATUALIZA_AGUA    32
+#define ATUALIZA_PONTOS  64
 
 /* Formata as cinco entradas da gravação em opcoes */
 int formata_gravacao(gravacao_st gravacao[5], char opcoes[5][60]);

@@ -12,9 +12,20 @@
 #include "selecionar_opcoes_posicao.h"
 #include "movimentacao.h"
 
+#define JOGO_OK       0
+#define JOGO_PERDEU   1
+#define JOGO_GANHOU   2
+#define JOGO_AFOGADO  3
+#define JOGO_VOLTAR   4
+#define JOGO_DENOVO   5
+#define JOGO_CARREGAR 6
+#define JOGO_ERRO     -1
+
 /* Tecla 254 escolhida arbitrariamente para GAME_OVER */
 #define GAME_OVER      254
 
+/* Verifica se gravacao está entre os 5 primeiros e o insere na posição correta */
+int salva_recorde(gravacao_st *gravacao);
 /* Atualiza determinada informação, dada por ATUALIZA_* */
 void atualiza_info(lolo_st *lolo, mapa_st *mapa, int y_delta_info,
     int y_inicio_info, int atualiza);

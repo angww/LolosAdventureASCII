@@ -116,6 +116,10 @@ void atualiza_info(lolo_st *lolo, mapa_st *mapa, int y_delta_info,
         snprintf(buf, 19, "Coracoes: %d", mapa->coracoes_num);
         exibe_item(buf, 3, y_inicio_info, y_delta_info, 55+2+11);
     }
+    if ( atualiza & ATUALIZA_PONTOS ) {
+        snprintf(buf, 19, "Pontucao: %d", lolo->pontos);
+        exibe_item(buf, 5, y_inicio_info, y_delta_info, 55+2+11);
+    }
 }
 
 void formata_delta_tempo(char *buf, int size, int time)

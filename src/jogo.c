@@ -32,9 +32,7 @@ int novojogo(void)
     gravacao.inicio = time(NULL);
     gravacao.final = time(NULL);
 
-    joga_mapas(&gravacao);
-
-    return 0;
+    return joga_mapas(&gravacao);
 }
 
 int carregarjogo(void)
@@ -51,9 +49,9 @@ int carregarjogo(void)
     }
 
     le_arquivo_pos(&gravacao, sizeof (gravacao_st), PASTA "/" SAVE_FILE, ret);
-    joga_mapas(&gravacao);
+    altera_inicio(&gravacao, gravacao.final);
 
-    return 0;
+    return joga_mapas(&gravacao);
 }
 
 int salvarjogo(gravacao_st *gravacao)
@@ -93,9 +91,52 @@ int joga_mapas(gravacao_st *gravacao)
             return 1;
         }
 
-        /* Jogador perdeu */
-        if ( ret == 1 ) {
+        if ( ret == JOGO_PERDEU || ret == JOGO_VOLTAR ||
+             ret == JOGO_DENOVO || ret == JOGO_CARREGAR ) {
             break;
+        } else if ( ret == JOGO_ERRO ) {
+            return 1;
+        } else if ( ret == JOGO_AFOGADO ) {
+            continue;
+        }
+    }
+
+    if ( ret == JOGO_GANHOU ) {
+        salva_recorde(gravacao);
+    } else if ( ret == JOGO_DENOVO ) {
+        return novojogo();
+    } else if ( ret == JOGO_CARREGAR ) {
+        return carregarjogo();
+    }
+
+    return 0;
+}
+
+int salva_recorde(gravacao_st *gravacao)
+{
+    /* Recordes já existentes */
+    recorde_st tmp_recorde[5];
+    recorde_st tmp1, tmp2;
+
+    le_arquivo(tmp_recorde, sizeof (recorde_st), 5, PASTA "/" RECORDS_FILE);
+
+    strncpy(tmp1.nome_jogador, gravacao->nome_jogador, 9);
+    tmp1.tempo_total = (time_t) difftime(gravacao->final, gravacao->inicio);
+    tmp1.totalpts = gravacao->totalpts + (10000 * (1 / tmp1.tempo_total));
+    tmp1.totalpts *= gravacao->vidas;
+
+    for ( int i = 0; i < 5; i++ ) {
+        if ( tmp1.totalpts > tmp_recorde[i].totalpts ) {
+            tmp2.totalpts = tmp_recorde[i].totalpts;
+            strncpy(tmp2.nome_jogador, tmp_recorde[i].nome_jogador, 9);
+            tmp2.tempo_total = tmp_recorde[i].tempo_total;
+
+            escreve_arquivo_pos(&tmp1, sizeof (recorde_st),
+                PASTA "/" RECORDS_FILE, i);
+
+            tmp1.totalpts = tmp2.totalpts;
+            strncpy(tmp1.nome_jogador, tmp2.nome_jogador, 9);
+            tmp1.tempo_total = tmp2.tempo_total;
         }
     }
 
@@ -113,6 +154,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
     lolo_st lolo;
     int ch = 0;
     int ret = 0;
+    int jogando = 1;
     int ret_submenu = 0;
 
     /* Carrega as informações do último nível e a posição atual */
@@ -131,8 +173,6 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
     do {
         /* Loop principal */
         do {
-            /* Espera 1000/20 ms, então lê a entrada */
-            //napms(1000 / 20);
             ch = getch();
             /* Descarta o resto da entrada */
             flushinp();
@@ -164,11 +204,6 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
                     ret = movimenta_lolo(&lolo, mapa, ch);
                     break;
                 case ERR:
-                    if ( (mapa->elementos)[(lolo.pos.y)-1][(lolo.pos.x)-1] == AGUA ) {
-                        lolo.vidas--;
-                        ret = ATUALIZA_VIDA;
-                    }
-                    break;
                 default:
                     break;
             }
@@ -178,25 +213,19 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
                 atualiza_info(&lolo, mapa, y_delta_info, y_inicio_info, ret);
             }
 
-            /* TODO: */
-            if ( ret & ATUALIZA_GANHOU ) {
-                ret_submenu = OPCAO_SAIR;
-                break;
+            if ( ret & (ATUALIZA_GANHOU|ATUALIZA_AGUA) || lolo.vidas < 1 ) {
+                jogando = 0;
             }
 
-            if ( lolo.vidas < 1 ) {
-                ch = GAME_OVER;
-                break;
-            }
-
-            /* TODO: gerenciar melhor o erro */
             if ( movimenta_inimigos(mapa, &lolo, y_inicio_info, y_delta_info) ) {
-                ch = GAME_OVER;
-                ret_submenu = OPCAO_SAIR;
+                limpa_inimigos(&(mapa->inimigos), mapa->inimigos_num);
+                mapa->inimigos_num = 0;
+
+                return JOGO_ERRO;
             }
 
             if ( lolo.vidas < 1 ) {
-                ch = GAME_OVER;
+                jogando = 0;
                 break;
             }
 
@@ -205,41 +234,70 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
                 (long int)difftime(time(NULL), gravacao->final));
             exibe_item(buf, 7, y_inicio_info, y_delta_info, 55+2+11);
 
-            ret = 0;
             refresh();
-        } while ( ch != ESC && ch != GAME_OVER );
+        } while ( jogando );
 
-        if (ch == ESC) {
+        if ( ch == ESC ) {
             tmp = time(NULL);
             ret_submenu = exibe_submenu(ch);
             altera_inicio(gravacao, tmp);
 
-            if ( ret_submenu == 1 ) {
-                salvarjogo(gravacao);
-            } else if ( ret_submenu == 2 ) {
-                break;
+            switch ( ret_submenu ) {
+                case 2:
+                    jogando = 0;
+                    break;
+                case 1:
+                    salvarjogo(gravacao);
+                case 0:
+                default:
+                    jogando = 1;
             }
 
             /* Redesenha mapa */
             exibe_jogo(&lolo, gravacao, mapa, y_delta_info, y_inicio_info);
         }
-
-        if (ch == GAME_OVER) {
-            ret_submenu = exibe_submenu(ch);
-        }
-    } while (ret_submenu != OPCAO_SAIR);
+    } while ( jogando );
 
     /* Limpa os inimigos remanescentes */
     limpa_inimigos(&(mapa->inimigos), mapa->inimigos_num);
     mapa->inimigos_num = 0;
 
-    /* Atualiza os dados para o próximo mapa */
-    gravacao->vidas = lolo.vidas;
-    gravacao->totalpts = lolo.pontos;
-    gravacao->final = time(NULL);
+    if ( ret_submenu == 2 ) {
+        return JOGO_VOLTAR;
+    } else if ( lolo.vidas < 1 ) {
+        refresh();
+        ret_submenu = exibe_submenu(GAME_OVER);
+        clear();
 
-    /* TODO: outros retorno, por enquanto não há necessidade */
-    return (lolo.vidas == 0 ? 1 : 0) || (ret_submenu == OPCAO_SAIR);
+        switch ( ret_submenu ) {
+            case 0:
+                return JOGO_DENOVO;
+            case 1:
+                return JOGO_CARREGAR;
+            default:
+                break;
+        }
+
+        return JOGO_PERDEU;
+    }
+
+    gravacao->vidas = lolo.vidas;
+
+    if ( !(ret & ATUALIZA_AGUA) ) {
+        /* Atualiza os dados */
+        gravacao->totalpts = lolo.pontos;
+        gravacao->final = time(NULL);
+    } else {
+        /* Jogar a mesma, caso tenha vidas */
+        gravacao->ultimafase--;
+    }
+
+    /* Indica que ganhou */
+    if ( ret & ATUALIZA_GANHOU ) {
+        return JOGO_GANHOU;
+    }
+
+    return JOGO_OK;
 }
 
 void altera_inicio(gravacao_st *gravacao, time_t inicio)

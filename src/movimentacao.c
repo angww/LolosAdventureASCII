@@ -14,10 +14,11 @@ int movimenta_inimigos(mapa_st *mapa, lolo_st *lolo, int y_inicio_info,
             #endif
 
             if ( !(limpa_inimigo_pos(&(mapa->inimigos), &(mapa->inimigos_num),
-                lolo->pos.y, lolo->pos.x)) && lolo->vidas > 1 ) {
+                lolo->pos.y, lolo->pos.x)) ) {
                 lolo->vidas--;
+                lolo->pontos += 30;
                 atualiza_info(lolo, mapa, y_delta_info, y_inicio_info,
-                    ATUALIZA_VIDA|ATUALIZA_INIMIGO);
+                    ATUALIZA_VIDA|ATUALIZA_INIMIGO|ATUALIZA_PONTOS);
             } else {
                 #ifdef DEBUG
                     debug_message("Erro ao limpar inimigo, encerrando");
@@ -100,12 +101,13 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
                 movimenta = 0;
             } else {
                 lolo->vidas--;
-                atualiza = ATUALIZA_INIMIGO|ATUALIZA_VIDA;
+                lolo->pontos += 30;
+                atualiza = ATUALIZA_INIMIGO|ATUALIZA_VIDA|ATUALIZA_PONTOS;
             }
             break;
         case AGUA:
             lolo->vidas--;
-            atualiza = ATUALIZA_VIDA;
+            atualiza = ATUALIZA_AGUA|ATUALIZA_VIDA;
             break;
         case CORACAO:
             /* Remove o coração dos elementos do mapa */

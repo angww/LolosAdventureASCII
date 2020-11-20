@@ -17,7 +17,6 @@
 /* JANELAS */
 #define JANELA_MAX_X 80
 #define JANELA_MAX_Y 25
-#define JANELA_MSEC_ANIMACAO 10
 
 /* Janela do Jogo */
 #define JOGO_JANELA_X 55
