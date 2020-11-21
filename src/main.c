@@ -85,7 +85,6 @@ int main(int argc, char **argv)
             }
         #endif
 
-        /* Incompleto */
         switch ( opcao ) {
             case CREDITOS:
                 clear();
@@ -102,16 +101,18 @@ int main(int argc, char **argv)
                 clear();
                 break;
             case NOVOJOGO:
-                clear();
-                desenha_borda(stdscr);
-                novojogo();
+                if ( novojogo() ) {
+                    endwin();
+                    return 1;
+                }
 
                 clear();
                 break;
             case CARREGARJOGO:
-                clear();
-                desenha_borda(stdscr);
-                carregarjogo();
+                if ( carregarjogo() ) {
+                    endwin();
+                    return 1;
+                }
 
                 clear();
                 break;

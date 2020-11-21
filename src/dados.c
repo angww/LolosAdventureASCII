@@ -7,9 +7,9 @@ void limpa_save(gravacao_st *gravacao)
     gravacao->ultimafase = 0;
     gravacao->vidas = 0;
 
-    for ( int i = 0; i < 8; i++ )
-        gravacao->nome_jogador[i] = '=';
-    gravacao->nome_jogador[8] = '\0';
+    for ( int i = 0; i < 9; i++ ) {
+        gravacao->nome_jogador[i] = '\0';
+    }
 
     gravacao->inicio = 0;
     gravacao->final = 0;
@@ -294,7 +294,7 @@ int formata_gravacao(gravacao_st gravacao[5], char opcoes[5][60])
             formata_delta_tempo(tempo_formatado, 10, (int)difftime(
                 gravacao[i].final, gravacao[i].inicio));
             snprintf(opcoes[num_gravacoes], 59,
-                "#%d   %d   %05d   %d   %9s   %6s", gravacao[i].identificador,
+                "#%03d  %d   %05d   %d    %-9s  %6s", gravacao[i].identificador,
                 gravacao[i].ultimafase+1, gravacao[i].totalpts,
                 gravacao[i].vidas, gravacao[i].nome_jogador, tempo_formatado);
             num_gravacoes++;

@@ -21,9 +21,6 @@
 #define JOGO_CARREGAR 6
 #define JOGO_ERRO     -1
 
-/* Tecla 254 escolhida arbitrariamente para GAME_OVER */
-#define GAME_OVER      254
-
 /* Verifica se gravacao está entre os 5 primeiros e o insere na posição correta */
 int salva_recorde(gravacao_st *gravacao);
 /* Atualiza determinada informação, dada por ATUALIZA_* */

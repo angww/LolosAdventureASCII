@@ -6,6 +6,13 @@ int novojogo(void)
     gravacao_st gravacao;
     int id;
 
+    clear();
+    desenha_borda(stdscr);
+
+    if ( le_nome(gravacao.nome_jogador) ) {
+        return 0;
+    }
+
     /*
      * O id será o maior incermentado por um, se o maior for 999 (limite),
      * procura o menor id disponível
@@ -22,9 +29,6 @@ int novojogo(void)
         id++;
     }
 
-    /* TODO: Obter o nome */
-    strncpy(gravacao.nome_jogador, "Exemplo", 9);
-
     gravacao.identificador = id;
     gravacao.totalpts = 0;
     gravacao.ultimafase = 0;
@@ -40,6 +44,9 @@ int carregarjogo(void)
     /* Ainda incompleto, próximo commit deverá conter as novas funções */
     gravacao_st gravacao;
     int ret;
+
+    clear();
+    desenha_borda(stdscr);
 
     ret = seleciona_gravacao();
 
@@ -103,7 +110,14 @@ int joga_mapas(gravacao_st *gravacao)
 
     if ( ret == JOGO_GANHOU ) {
         salva_recorde(gravacao);
-    } else if ( ret == JOGO_DENOVO ) {
+        ret = exibe_submenu(JOGO_GANHOU);
+
+        if ( ret == 0 ) { ret = JOGO_DENOVO; }
+        else if ( ret ==  1 ) { ret = JOGO_CARREGAR; }
+        else { ret = JOGO_OK; }
+    }
+
+    if ( ret == JOGO_DENOVO ) {
         return novojogo();
     } else if ( ret == JOGO_CARREGAR ) {
         return carregarjogo();

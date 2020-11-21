@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctype.h>
 #include "selecionar_opcoes_posicao.h"
 #include "defines_lolo.h"
 #include "arquivos.h"
@@ -31,6 +32,14 @@
 #define FINAL_GRIDY_MENU_PRINCIPAL 23
 #define TAMANHO_GRIDY_MENU_PRINCIPAL FINAL_GRIDY_MENU_PRINCIPAL - INICIO_GRIDY_MENU_PRINCIPAL
 
+/* KEY_BACKSPACE não compatível */
+#define BACKSPACE 127
+
+/* Tecla 254 escolhida arbitrariamente para GAME_OVER */
+#define GAME_OVER      254
+
+/* Exibe um menu para o jogador inserir o nome */
+int le_nome(char *buf);
 /* Exibe um menu para sobreescrever alguma gravação */
 int seleciona_gravacao_sobreescrever(gravacao_st gravacao[5]);
 /* Exibe o menu principal */

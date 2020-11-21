@@ -48,7 +48,7 @@ int recordes(void)
 
     for ( int i = 0; i < 5; i++ ) {
         formata_delta_tempo(tempo_formatado, 10, (int) (buffer[i].tempo_total));
-        snprintf(recordes_formatados[i], 60, "#%d   %05d   %9s   %6s", i+1,
+        snprintf(recordes_formatados[i], 60, "#%d   %05d   %-9s   %6s", i+1,
             buffer[i].totalpts, buffer[i].nome_jogador, tempo_formatado);
     }
 
@@ -172,7 +172,11 @@ int exibe_submenu(int ch)
         opcoes[0] = "Continuar Jogando";
         opcoes[1] = "Salvar Jogo";
     } else {
-        titulo = "==  GAME OVER  ==";
+        if ( ch == GAME_OVER ) {
+            titulo = "==  GAME OVER  ==";
+        } else {
+            titulo = "==  VOCE GANHOU  ==";
+        }
         opcoes[0] = "Novo Jogo";
         opcoes[1] = "Carregar Jogo";
     }
@@ -196,11 +200,108 @@ int exibe_submenu(int ch)
             }
 
             wresize(w, 16, 32);
+            desenha_borda(stdscr);
             wrefresh(stdscr);
             wrefresh(w);
             box(w, 0, 0);
+        } else if ( ret == ESC && ch == ESC ) {
+            ret = 0;
         }
     } while ( ret < 0 || ret > 2 );
 
     return ret;
+}
+
+int le_nome(char *buf)
+{
+    int y_delta;
+    int ret;
+    int i = 0;
+    int opcao = 0;
+    int mudou_opcao = 0;
+    char *textos[] = {"Insira seu nome:", "Continuar", "Cancelar"};
+
+    strncpy(buf, "________", 9);
+
+    /* Distância no eixo y entre um item e outro */
+    y_delta = distancia_itens(4, 20, 7);
+
+    exibe_item(textos[0], 0, 7, y_delta, 40);
+    exibe_opcao(buf, 1, 7, y_delta, 40);
+    exibe_item(textos[1], 2, 7, y_delta, 40);
+    exibe_item(textos[2], 3, 7, y_delta, 40);
+
+    do {
+        ret = getch();
+
+        if ( opcao == 0 ) {
+            if ( isalnum(ret & A_CHARTEXT) && i < 8 ) {
+                buf[i] = ret & A_CHARTEXT;
+                i++;
+            } else if ( ret == BACKSPACE && i > 0 ) {
+                buf[--i] = '_';
+            }
+
+            exibe_opcao(buf, 1, 7, y_delta, 40);
+        }
+
+        switch ( ret ) {
+            case KEY_UP:
+                if ( opcao == 0 ) {
+                    opcao = 2;
+                } else {
+                    opcao--;
+                }
+
+                mudou_opcao = 1;
+                break;
+            case KEY_DOWN:
+                if ( opcao == 2 ) {
+                    opcao = 0;
+                } else {
+                    opcao++;
+                }
+
+                mudou_opcao = 1;
+                break;
+            default:
+                break;
+        }
+
+        if ( ret == KEY_RESIZE ) {
+            if ( !tamanho_valido() ) {
+                espera_tamanho_valido();
+                wclear(stdscr);
+                mudou_opcao = 1;
+            } else {
+                resize_term(JANELA_MAX_Y, JANELA_MAX_X);
+            }
+
+            desenha_borda(stdscr);
+        }
+
+        if ( mudou_opcao ) {
+            exibe_item(textos[0], 0, 7, y_delta, 40);
+            exibe_item(buf, 1, 7, y_delta, 40);
+            exibe_item(textos[1], 2, 7, y_delta, 40);
+            exibe_item(textos[2], 3, 7, y_delta, 40);
+
+            if ( opcao == 0 ) {
+                exibe_opcao(buf, 1, 7, y_delta, 40);
+            } else {
+                exibe_opcao(textos[opcao], opcao+1, 7, y_delta, 40);
+            }
+
+            mudou_opcao = 0;
+            refresh();
+        }
+    } while ( !(opcao != 0 && ret == '\n') ||
+              (opcao == 1 && i < 1) );
+
+    if ( opcao == 1 ) {
+        buf[i] = '\0';
+        return 0;
+    }
+
+    return 1;
 }
