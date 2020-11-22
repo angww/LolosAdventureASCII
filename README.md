@@ -59,6 +59,6 @@ typedef struct {
 
 ## COMPILAÇÃO 
 
-A compilação foi testada no site `repl.it` e localmente usando o comando `make`, ao compilar é criado diretório `bin` contendo o binário e um subdiretório contendo os níveis, para executar pode-se tanto usar `make run` ou executar `lolosgame.out` caso esteja dentro do diretório `bin`.
+A compilação foi testada tanto no site `repl.it` quanto localmente usando o comando `make`, no `repl.it` é necessário compilar com o `clang`, localmente foi utilzado o `gcc`. Ao compilar é criado diretório `bin` contendo o binário e um subdiretório contendo os níveis, para executar pode-se tanto usar `make run` ou executar `lolosgame.out` caso esteja dentro do diretório `bin`.
 
-Caso seja compilado com a opção `DEBUG` habilitada, será criado um arquivo com nome `log_lolo.log` que terá informações básicas sobre o que está ocorrendo no jogo.
+Caso seja compilado com a opção `DEBUG` habilitada, será criado o arquivo `bin/log_lolo.log` que terá informações básicas sobre o que está ocorrendo no jogo.
