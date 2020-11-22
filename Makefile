@@ -11,7 +11,7 @@
 # Documentação oficial do make em https://www.gnu.org/software/make/manual/make.html
 
 # Flags para o compilador
-CFLAGS=-lncurses -Wall -DDEBUG=1
+CFLAGS=-lncurses -Wall
 # Diretório onde estão os arquivos a serem compilados
 SRC_DIR=./src/
 # Arquivo de saída

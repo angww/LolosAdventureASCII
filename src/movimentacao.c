@@ -90,6 +90,10 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
                 exibe_caractere_jogo(BLOCO_MOVEL, bloco_pos.y, bloco_pos.x);
                 atualiza_grid_mapa(mapa, new_pos, LIVRE);
                 atualiza_grid_mapa(mapa, bloco_pos, BLOCO_MOVEL);
+
+                #ifdef DEBUG
+                    debug_message("Lolo moveu um bloco");
+                #endif
             } else {
                 movimenta = 0;
             }
@@ -103,11 +107,20 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
                 lolo->vidas--;
                 lolo->pontos += 30;
                 atualiza = ATUALIZA_INIMIGO|ATUALIZA_VIDA|ATUALIZA_PONTOS;
+
+                #ifdef DEBUG
+                    debug_message("Lolo pegou um inimigo");
+                #endif
             }
             break;
         case AGUA:
             lolo->vidas--;
             atualiza = ATUALIZA_AGUA|ATUALIZA_VIDA;
+
+            #ifdef DEBUG
+                debug_message("Lolo se afogou");
+            #endif
+
             break;
         case CORACAO:
             /* Remove o coração dos elementos do mapa */
@@ -115,6 +128,11 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
             mapa->coracoes_num--;
             lolo->vidas++;
             atualiza = ATUALIZA_CORACAO|ATUALIZA_VIDA;
+
+            #ifdef DEBUG
+                debug_message("Lolo pegou um coracao");
+            #endif
+
             break;
         case BAU:
             /* Se o baú não estiver aberto lolo não pode passar por ele */

@@ -36,6 +36,11 @@ int novojogo(void)
     gravacao.inicio = time(NULL);
     gravacao.final = time(NULL);
 
+    #ifdef DEBUG
+        debug_message("Novo jogo, nome: %s, id: %d", gravacao.nome_jogador,
+            gravacao.identificador);
+    #endif
+
     return joga_mapas(&gravacao);
 }
 
@@ -58,6 +63,11 @@ int carregarjogo(void)
     le_arquivo_pos(&gravacao, sizeof (gravacao_st), PASTA "/" SAVE_FILE, ret);
     altera_inicio(&gravacao, gravacao.final);
 
+    #ifdef DEBUG
+        debug_message("Jogo carregado, nome: %s, id: %d", gravacao.nome_jogador,
+            gravacao.identificador);
+    #endif
+
     return joga_mapas(&gravacao);
 }
 
@@ -79,6 +89,12 @@ int salvarjogo(gravacao_st *gravacao)
     escreve_arquivo_pos(gravacao, sizeof (gravacao_st), PASTA "/" SAVE_FILE,
         pos);
 
+
+    #ifdef DEBUG
+        debug_message("Jogo de id %d salvo na posicao %d",
+            gravacao->identificador, pos);
+    #endif
+
     return 0;
 }
 
@@ -90,6 +106,10 @@ int joga_mapas(gravacao_st *gravacao)
 
     /* Execta até chegar no último arquivo, jogador perder ou voltar ao menu */
     for ( ; gravacao->ultimafase < NUM_NIVEIS; gravacao->ultimafase++ ) {
+        #ifdef DEBUG
+            debug_message("Jogando nivel: %d", gravacao->ultimafase);
+        #endif
+
         /* Executa se conseguiu carregar e processar o mapa */
         if ( carrega_arquivo_mapa(&mapa, niveis[gravacao->ultimafase]) == 0 ) {
             ret = loop_jogo(&mapa, gravacao);
@@ -141,6 +161,10 @@ int salva_recorde(gravacao_st *gravacao)
 
     for ( int i = 0; i < 5; i++ ) {
         if ( tmp1.totalpts > tmp_recorde[i].totalpts ) {
+            #ifdef DEBUG
+                debug_message("Atualizando entrada %d de recorde", i);
+            #endif
+
             tmp2.totalpts = tmp_recorde[i].totalpts;
             strncpy(tmp2.nome_jogador, tmp_recorde[i].nome_jogador, 9);
             tmp2.tempo_total = tmp_recorde[i].tempo_total;
@@ -157,7 +181,6 @@ int salva_recorde(gravacao_st *gravacao)
     return 0;
 }
 
-/* TODO: apenas funcionamento básico, ESC abre o menu */
 int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 {
     /* Onde deve exibir as informações */
@@ -252,6 +275,10 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
         } while ( jogando );
 
         if ( ch == ESC ) {
+            #ifdef DEBUG
+                debug_message("Jogo pausado");
+            #endif
+
             tmp = time(NULL);
             ret_submenu = exibe_submenu(ch);
             altera_inicio(gravacao, tmp);
@@ -279,6 +306,10 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
     if ( ret_submenu == 2 ) {
         return JOGO_VOLTAR;
     } else if ( lolo.vidas < 1 ) {
+        #ifdef DEBUG
+            debug_message("Jogador perdeu");
+        #endif
+
         refresh();
         ret_submenu = exibe_submenu(GAME_OVER);
         clear();
@@ -308,6 +339,10 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 
     /* Indica que ganhou */
     if ( ret & ATUALIZA_GANHOU ) {
+        #ifdef DEBUG
+            debug_message("Jogador ganhou");
+        #endif
+
         return JOGO_GANHOU;
     }
 
@@ -318,6 +353,10 @@ void altera_inicio(gravacao_st *gravacao, time_t inicio)
 {
     time_t delta;
     delta = difftime(inicio, time(NULL));
+
+    #ifdef DEBUG
+        debug_message("Alterando tempo em %d segundos", (int)delta);
+    #endif
 
     gravacao->final -= delta;
     gravacao->inicio -= delta;

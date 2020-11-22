@@ -3,7 +3,7 @@
 int carrega_arquivo_mapa(mapa_st *mapa, char *filename)
 {
     #ifdef DEBUG
-        debug_message("Carreando nivel \"%s\"", filename);
+        debug_message("Carregando nivel \"%s\"", filename);
     #endif
 
     int ret = 0;

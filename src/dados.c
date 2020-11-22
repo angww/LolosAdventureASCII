@@ -105,8 +105,8 @@ void atualiza_info(lolo_st *lolo, mapa_st *mapa, int y_delta_info,
     char buf[19];
 
     if ( atualiza & ATUALIZA_VIDA ) {
-          snprintf(buf, 19, "Vidas: %d", lolo->vidas);
-          exibe_item(buf, 1, y_inicio_info, y_delta_info, 55+2+11);
+        snprintf(buf, 19, "Vidas: %d", lolo->vidas);
+        exibe_item(buf, 1, y_inicio_info, y_delta_info, 55+2+11);
     }
     if ( atualiza & ATUALIZA_INIMIGO ) {
         snprintf(buf, 19, "inimigos: %d", mapa->inimigos_num);
@@ -195,10 +195,6 @@ int adiciona_inimigo(inimigo_st ***inimigos, int linha, int coluna, int inimigos
 
     /* Limpa a memória que estava sendo usada e retorna 1 */
     if ( tmp_list == NULL || tmp_inimigo == NULL ) {
-        #ifdef DEBUG
-            debug_message("Nao foi possivel alocar memoria para os inimigos");
-        #endif
-
         if ( tmp_inimigo != NULL ) {
             free(tmp_inimigo);
         }
@@ -221,6 +217,10 @@ int adiciona_inimigo(inimigo_st ***inimigos, int linha, int coluna, int inimigos
 
 int limpa_inimigos(inimigo_st ***inimigos, int inimigos_num)
 {
+    #ifdef DEBUG
+        debug_message("Limpando todos inimigos");
+    #endif
+
     /* Se o ponteiro for NULL ou não tiver inimigos, não precisa ser limpo */
     if ( *inimigos == NULL || inimigos_num == 0 ) {
         return 0;
@@ -298,8 +298,6 @@ int formata_gravacao(gravacao_st gravacao[5], char opcoes[5][60])
                 gravacao[i].ultimafase+1, gravacao[i].totalpts,
                 gravacao[i].vidas, gravacao[i].nome_jogador, tempo_formatado);
             num_gravacoes++;
-        } else {
-            strncpy(opcoes[i], "Espaco livre", 60);
         }
     }
 
