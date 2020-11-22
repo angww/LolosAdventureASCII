@@ -27,7 +27,14 @@ $ git clone https://github.com/angww/LolosAdventureASCII
 $ cd LolosAdventureASCII
 ```
 
-3. Utilize o make com o argumento run para compilar e já rodar o jogo
+3. Caso esteja compilando localmente, pule para a etapa 4, se não descomente a linha `# CC=clang` no arquivo `Makefile`, deixando-o assim:
+
+```cmake
+# Descomente se for usar no repl.it
+CC=clang
+```
+
+4. Utilize o make com o argumento run para compilar e já rodar o jogo
 
 ```bash
 $ make run
