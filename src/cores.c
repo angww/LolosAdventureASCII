@@ -10,6 +10,7 @@ void inicializa_cores(void)
     init_pair(INIMIGO_COR, COLOR_BLACK,   COLOR_RED);
     init_pair(AGUA_COR,    COLOR_BLUE,    COLOR_CYAN);
     init_pair(BAU_COR,     COLOR_WHITE,   COLOR_MAGENTA);
+    init_pair(BAUABERT_COR,COLOR_BLACK,   COLOR_WHITE);
     init_pair(FIXO_COR,    COLOR_BLACK,   COLOR_YELLOW);
     init_pair(MOVEL_COR,   COLOR_BLACK,   COLOR_CYAN);
     init_pair(CORACAO_COR, COLOR_WHITE,   COLOR_MAGENTA);
@@ -37,6 +38,9 @@ void exibe_caractere_jogo(char ch, int y, int x)
             break;
         case BAU:
             exibe_caractere_colorido(BAU, BAU_COR);
+            break;
+        case BAU_ABERTO:
+            exibe_caractere_colorido(BAU_ABERTO, BAUABERT_COR);
             break;
         case CORACAO:
             exibe_caractere_colorido(CORACAO, CORACAO_COR);

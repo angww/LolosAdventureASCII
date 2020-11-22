@@ -142,6 +142,11 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
                 atualiza = ATUALIZA_GANHOU;
             }
             break;
+        case BAU_ABERTO:
+            /* Se for o baú aberto */
+            atualiza = ATUALIZA_GANHOU;
+            break;
+            
         /* Bloco Livre */
         default:
             break;

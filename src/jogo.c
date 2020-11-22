@@ -261,6 +261,17 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
                 return JOGO_ERRO;
             }
 
+             /* Abre baú */
+            if (mapa->inimigos_num == 0 && mapa->coracoes_num == 0) {
+
+                #ifdef DEBUG
+                    debug_message("Abre bau");
+                 #endif
+
+                    atualiza_grid_mapa(mapa, mapa->bau, BAU_ABERTO);
+                    exibe_jogo(&lolo, gravacao, mapa, y_delta_info, y_inicio_info);
+            }
+
             if ( lolo.vidas < 1 ) {
                 jogando = 0;
                 break;
