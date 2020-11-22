@@ -36,7 +36,7 @@ int novojogo(void)
     gravacao.inicio = time(NULL);
     gravacao.final = time(NULL);
 
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Novo jogo, nome: %s, id: %d", gravacao.nome_jogador,
             gravacao.identificador);
     #endif
@@ -63,7 +63,7 @@ int carregarjogo(void)
     le_arquivo_pos(&gravacao, sizeof (gravacao_st), PASTA "/" SAVE_FILE, ret);
     altera_inicio(&gravacao, gravacao.final);
 
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Jogo carregado, nome: %s, id: %d", gravacao.nome_jogador,
             gravacao.identificador);
     #endif
@@ -90,7 +90,7 @@ int salvarjogo(gravacao_st *gravacao)
         pos);
 
 
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Jogo de id %d salvo na posicao %d",
             gravacao->identificador, pos);
     #endif
@@ -106,7 +106,7 @@ int joga_mapas(gravacao_st *gravacao)
 
     /* Execta até chegar no último arquivo, jogador perder ou voltar ao menu */
     for ( ; gravacao->ultimafase < NUM_NIVEIS; gravacao->ultimafase++ ) {
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Jogando nivel: %d", gravacao->ultimafase);
         #endif
 
@@ -156,12 +156,12 @@ int salva_recorde(gravacao_st *gravacao)
 
     strncpy(tmp1.nome_jogador, gravacao->nome_jogador, 9);
     tmp1.tempo_total = (time_t) difftime(gravacao->final, gravacao->inicio);
-    tmp1.totalpts = gravacao->totalpts + (10000 * (1 / tmp1.tempo_total));
+    tmp1.totalpts = gravacao->totalpts;
     tmp1.totalpts *= gravacao->vidas;
 
     for ( int i = 0; i < 5; i++ ) {
         if ( tmp1.totalpts > tmp_recorde[i].totalpts ) {
-            #ifdef DEBUG
+            #if DEBUG
                 debug_message("Atualizando entrada %d de recorde", i);
             #endif
 
@@ -261,17 +261,6 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
                 return JOGO_ERRO;
             }
 
-             /* Abre baú */
-            if (mapa->inimigos_num == 0 && mapa->coracoes_num == 0) {
-
-                #ifdef DEBUG
-                    debug_message("Abre bau");
-                 #endif
-
-                    atualiza_grid_mapa(mapa, mapa->bau, BAU_ABERTO);
-                    exibe_jogo(&lolo, gravacao, mapa, y_delta_info, y_inicio_info);
-            }
-
             if ( lolo.vidas < 1 ) {
                 jogando = 0;
                 break;
@@ -286,7 +275,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
         } while ( jogando );
 
         if ( ch == ESC ) {
-            #ifdef DEBUG
+            #if DEBUG
                 debug_message("Jogo pausado");
             #endif
 
@@ -317,7 +306,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
     if ( ret_submenu == 2 ) {
         return JOGO_VOLTAR;
     } else if ( lolo.vidas < 1 ) {
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Jogador perdeu");
         #endif
 
@@ -350,7 +339,7 @@ int loop_jogo(mapa_st *mapa, gravacao_st *gravacao)
 
     /* Indica que ganhou */
     if ( ret & ATUALIZA_GANHOU ) {
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Jogador ganhou");
         #endif
 
@@ -365,7 +354,7 @@ void altera_inicio(gravacao_st *gravacao, time_t inicio)
     time_t delta;
     delta = difftime(inicio, time(NULL));
 
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Alterando tempo em %d segundos", (int)delta);
     #endif
 

@@ -6,7 +6,7 @@
 #include "arquivos.h"
 #include "janela_tamanho.h"
 
-#ifdef DEBUG
+#if DEBUG
 #include "debug.h"
 #endif
 

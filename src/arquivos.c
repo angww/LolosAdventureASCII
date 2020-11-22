@@ -2,7 +2,7 @@
 
 int carrega_arquivo_mapa(mapa_st *mapa, char *filename)
 {
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Carregando nivel \"%s\"", filename);
     #endif
 
@@ -10,7 +10,7 @@ int carrega_arquivo_mapa(mapa_st *mapa, char *filename)
     FILE *fp = fopen(filename, "r");
 
     if ( fp == NULL ) {
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro ao carregar o nivel \"%s\": %s", filename,
                 strerror(errno));
         #endif
@@ -22,7 +22,7 @@ int carrega_arquivo_mapa(mapa_st *mapa, char *filename)
         ret = fread(mapa->elementos[linha], sizeof (char), JOGO_JANELA_X, fp);
 
         if ( ret != JOGO_JANELA_X ) {
-            #ifdef DEBUG
+            #if DEBUG
                 debug_message("Erro ao ler arquivo de nivel \"%s\"", filename);
             #endif
 
@@ -34,7 +34,7 @@ int carrega_arquivo_mapa(mapa_st *mapa, char *filename)
     }
 
     if ( fclose(fp) != 0 ) {
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro ao fechar o arquivo %s: %s", filename,
                 strerror(errno));
         #endif
@@ -127,7 +127,7 @@ int le_arquivo(void *ptr, size_t size, int nmemb, char *filename)
     if ( fp == NULL ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
 
@@ -137,7 +137,7 @@ int le_arquivo(void *ptr, size_t size, int nmemb, char *filename)
     if ( fread(ptr, size, nmemb, fp) != nmemb ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             /* Erro na leitura ou não leu tudo */
             if ( errsv != SUCCESS ) {
                 debug_message("Erro: %s: %s", strerror(errno), filename);
@@ -169,7 +169,7 @@ int le_arquivo_pos(void *ptr, size_t size, char *filename, int pos)
     if ( fp == NULL ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
 
@@ -181,7 +181,7 @@ int le_arquivo_pos(void *ptr, size_t size, char *filename, int pos)
     if ( fread(ptr, size, 1, fp) != 1 ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             /* Erro na leitura ou não leu tudo */
             if ( errsv != SUCCESS ) {
                 debug_message("Erro: %s: %s", strerror(errno), filename);
@@ -213,7 +213,7 @@ int escreve_arquivo_pos(void *ptr, size_t size, char *filename, int pos)
     if ( fp == NULL ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
 
@@ -225,7 +225,7 @@ int escreve_arquivo_pos(void *ptr, size_t size, char *filename, int pos)
     if ( fwrite(ptr, size, 1, fp) != 1 ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             /* Erro ao escrever */
             if ( errsv != SUCCESS ) {
                 debug_message("Erro: %s: %s", strerror(errno), filename);
@@ -257,7 +257,7 @@ int escreve_arquivo(void *ptr, size_t size, int nmemb, char *filename)
     if ( fp == NULL ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
 
@@ -267,7 +267,7 @@ int escreve_arquivo(void *ptr, size_t size, int nmemb, char *filename)
     if ( fwrite(ptr, size, nmemb, fp) != nmemb ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             /* Erro na leitura ou não leu tudo */
             if ( errsv != SUCCESS ) {
                 debug_message("Erro: %s: %s", strerror(errno), filename);
@@ -293,14 +293,14 @@ int escreve_arquivo(void *ptr, size_t size, int nmemb, char *filename)
 int tenta_fechar(FILE *fp, char *filename, int errsv)
 {
     if ( errsv ) {
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: %s: %s", strerror(errsv), filename);
         #endif
     }
 
     if ( fclose(fp) != 0 ) {
         errsv = errno;
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: %s: %s", strerror(errsv), filename);
         #endif
     }
@@ -318,11 +318,11 @@ int arquivo_existe(char *filename)
     if ( ret != SUCCESS ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
     } else {
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Arquivo %s existe", filename);
         #endif
     }
@@ -340,11 +340,11 @@ int arquivo_acessivel(char *filename)
     if ( ret != SUCCESS ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
     } else {
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Arquivo %s acessivel", filename);
         #endif
     }
@@ -359,7 +359,7 @@ int cria_arquivo(char *filename)
 
     mode_t mode = PERMISSOES;
 
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Criando arquivo %s", filename);
     #endif
 
@@ -368,7 +368,7 @@ int cria_arquivo(char *filename)
     if ( fd == -1 ){
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
     } else {
@@ -383,7 +383,7 @@ int cria_pasta(char *filename)
     int errsv = SUCCESS;
     int ret;
 
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Criando pasta %s", filename);
     #endif
 
@@ -394,7 +394,7 @@ int cria_pasta(char *filename)
     if ( ret != 0 ) {
         errsv = errno;
 
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: %s: %s", strerror(errno), filename);
         #endif
     }

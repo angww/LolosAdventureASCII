@@ -33,7 +33,7 @@
 #define INIMIGO     'E' /* 01000101 */
 #define CORACAO     'C' /* 01000011 */
 #define BAU         'T' /* 01010100 */
-#define BAU_ABERTO  'O' /* 01010100 */
+#define BAU_ABERTO  'O' /* 01001111 */
 #define AGUA        'A' /* 01000001 */
 #define LIVRE       ' ' /* 00100000 */
 #define MASCARA_INIMIGO  0b00011111
