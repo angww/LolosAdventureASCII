@@ -8,10 +8,33 @@
 :memo:  Este jogo é um trabalho de graduação para a cadeira de INF01202 - Algoritmos e Programação, curso de Ciência da Computação da UFRGS.
 
 <p align="center">
-    <img align="center" src="misc/Lolos-menu.png" width="500" alt="Screenshoot Menu"></img><br />
-    <img align="center" src="misc/Lolos-Gif-Fase2.gif" width="500" alt="Screenshoot Fase 2"></img><br />
+    <img align="center" src="misc/Lolos-menu.png" width="500" alt="Screenshoot Menu"></img><br /><br />
+    <img align="center" src="misc/Lolos-Gif-Fase2.gif" width="500" alt="Screenshoot Fase 2"></img><br /><br />
     <img align="center" src="misc/Lolos-Fase1.png" width="500" alt="Screenshoot Fase 1"></img><br />
 </p>
+
+## Como compilar e rodar
+
+1. Clone o repositório
+
+```bash
+$ git clone https://github.com/angww/LolosAdventureASCII
+```
+
+2. Abra o diretório criado
+
+```bash
+$ cd LolosAdventureASCII
+```
+
+3. Utilize o make com o argumento run para compilar e já rodar o jogo
+
+```bash
+$ make run
+```
+Pronto! Este comando irá compilar todas as dependências, criar o executável em `bin/lolosgame.out` e rodar o game.
+
+Caso seja compilado com a opção `DEBUG` habilitada, será criado o arquivo `bin/log_lolo.log` que terá informações básicas sobre o que está ocorrendo no jogo. Recomenda-se rodar o jogo com uma janela lado a lado escutando o log. Pode-se usar `tail -F bin/log_lolo.log`.
 
 
 ## Modificações
@@ -70,9 +93,7 @@ typedef struct {
 } mapa_st;
 ```
 
-## COMPILAÇÃO 
+## Sobre os autores 
 
-A compilação foi testada tanto no site `repl.it` quanto localmente usando o comando `make`, no `repl.it` é necessário compilar com o `clang`, localmente foi utilzado o `gcc`. Ao compilar é criado diretório `bin` contendo o binário e um subdiretório contendo os níveis, para executar pode-se tanto usar `make run` ou executar `lolosgame.out` caso esteja dentro do diretório `bin`.
-
-Caso seja compilado com a opção `DEBUG` habilitada, será criado o arquivo `bin/log_lolo.log` que terá informações básicas sobre o que está ocorrendo no jogo.
-
+* **Andrei Bereta** - [Perfil no Github](https://github.com/AndreiBereta)
+* **Angelo Martins** - [Perfil no Github](https://github.com/angww)
