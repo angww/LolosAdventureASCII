@@ -8,10 +8,11 @@
 :memo:  Este jogo é um trabalho de graduação para a cadeira de INF01202 - Algoritmos e Programação, curso de Ciência da Computação da UFRGS.
 
 <p align="center">
-    <img align="center" src="misc/Lolos-menu.png" width="400" alt="Screenshoot Menu"></img>
-    <img align="center" src="misc/Lolos-Gif-Fase2.gif" width="400" alt="Screenshoot Fase 2"></img>
-    <img align="center" src="misc/Lolos-Fase1.png" width="400" alt="Screenshoot Fase 1"></img>
+    <img align="center" src="misc/Lolos-menu.png" width="500" alt="Screenshoot Menu"></img><br />
+    <img align="center" src="misc/Lolos-Gif-Fase2.gif" width="500" alt="Screenshoot Fase 2"></img><br />
+    <img align="center" src="misc/Lolos-Fase1.png" width="500" alt="Screenshoot Fase 1"></img><br />
 </p>
+
 
 ## Modificações
 
