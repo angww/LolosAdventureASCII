@@ -1,5 +1,15 @@
+
 # LolosAdventureASCII
-Trabalho de graduação para a cadeira de INF01202 - Algoritmos e Programação, curso de Ciência da Computação da UFRGS.
+
+> Versão simplificada em terminal do jogo Lolo's Adventure, lançado em 1989 para a plataforma NES.
+
+:notes:  Este jogo é um trabalho de graduação para a cadeira de INF01202 - Algoritmos e Programação, curso de Ciência da Computação da UFRGS.
+
+![Screenshoot Menu](https://raw.githubusercontent.com/angww/LolosAdventureASCII/main/misc/Lolos-menu.png)
+
+![Screenshoot Fase 2](https://raw.githubusercontent.com/angww/LolosAdventureASCII/main/misc/Lolos-Gif-Fase2.gif)
+
+![Screenshoot Fase 1](https://raw.githubusercontent.com/angww/LolosAdventureASCII/main/misc/Lolos-Fase1.png)
 
 ## Modificações
 
@@ -62,3 +72,5 @@ typedef struct {
 A compilação foi testada tanto no site `repl.it` quanto localmente usando o comando `make`, no `repl.it` é necessário compilar com o `clang`, localmente foi utilzado o `gcc`. Ao compilar é criado diretório `bin` contendo o binário e um subdiretório contendo os níveis, para executar pode-se tanto usar `make run` ou executar `lolosgame.out` caso esteja dentro do diretório `bin`.
 
 Caso seja compilado com a opção `DEBUG` habilitada, será criado o arquivo `bin/log_lolo.log` que terá informações básicas sobre o que está ocorrendo no jogo.
+
+[![Run on Repl.it](https://repl.it/badge/github/angww/LolosAdventureASCII)](https://repl.it/github/angww/LolosAdventureASCII)
