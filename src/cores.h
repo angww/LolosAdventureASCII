@@ -12,6 +12,7 @@
 #define MOVEL_COR    6
 #define FIXO_COR     7
 #define CORACAO_COR  8
+#define BAUABERT_COR 9
 
 void inicializa_cores(void);
 void desenha_borda(WINDOW *win);

@@ -7,6 +7,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include "menus.h"
+#include "cores.h"
+#include "jogo.h"
 
 #define ATUALIZA_VIDA    1
 #define ATUALIZA_CORACAO 2

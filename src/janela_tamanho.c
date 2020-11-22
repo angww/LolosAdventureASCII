@@ -1,6 +1,6 @@
 #include "janela_tamanho.h"
 
-#ifdef DEBUG
+#if DEBUG
 #include "debug.h"
 #endif
 
@@ -55,7 +55,7 @@ int tamanho_valido(void)
      * Se DEBUG estiver definido, informa no arquivo de log a alteração do
      * tamanho da janela
      */
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Janela com tamanho: (%d, %d), valido: %d",
             max_y, max_x, valido);
     #endif

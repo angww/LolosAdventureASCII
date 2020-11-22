@@ -11,7 +11,7 @@
 #include <sys/stat.h>  /* mkdir */
 #include <fcntl.h>     /* open e O_RDONLY */
 
-#ifdef DEBUG
+#if DEBUG
 #include "debug.h"
 #endif
 

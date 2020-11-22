@@ -9,7 +9,7 @@ int movimenta_inimigos(mapa_st *mapa, lolo_st *lolo, int y_inicio_info,
          * inimigo
          */
         if ( movimenta_inimigo((mapa->inimigos)[i]) ) {
-            #ifdef DEBUG
+            #if DEBUG
                 debug_message("Inimigo pegou Lolo");
             #endif
 
@@ -20,7 +20,7 @@ int movimenta_inimigos(mapa_st *mapa, lolo_st *lolo, int y_inicio_info,
                 atualiza_info(lolo, mapa, y_delta_info, y_inicio_info,
                     ATUALIZA_VIDA|ATUALIZA_INIMIGO|ATUALIZA_PONTOS);
             } else {
-                #ifdef DEBUG
+                #if DEBUG
                     debug_message("Erro ao limpar inimigo, encerrando");
                 #endif
 
@@ -91,7 +91,7 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
                 atualiza_grid_mapa(mapa, new_pos, LIVRE);
                 atualiza_grid_mapa(mapa, bloco_pos, BLOCO_MOVEL);
 
-                #ifdef DEBUG
+                #if DEBUG
                     debug_message("Lolo moveu um bloco");
                 #endif
             } else {
@@ -108,7 +108,7 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
                 lolo->pontos += 30;
                 atualiza = ATUALIZA_INIMIGO|ATUALIZA_VIDA|ATUALIZA_PONTOS;
 
-                #ifdef DEBUG
+                #if DEBUG
                     debug_message("Lolo pegou um inimigo");
                 #endif
             }
@@ -117,7 +117,7 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
             lolo->vidas--;
             atualiza = ATUALIZA_AGUA|ATUALIZA_VIDA;
 
-            #ifdef DEBUG
+            #if DEBUG
                 debug_message("Lolo se afogou");
             #endif
 
@@ -129,7 +129,7 @@ int movimenta_lolo(lolo_st *lolo, mapa_st *mapa, int key)
             lolo->vidas++;
             atualiza = ATUALIZA_CORACAO|ATUALIZA_VIDA;
 
-            #ifdef DEBUG
+            #if DEBUG
                 debug_message("Lolo pegou um coracao");
             #endif
 

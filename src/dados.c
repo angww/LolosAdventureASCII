@@ -107,6 +107,19 @@ void atualiza_info(lolo_st *lolo, mapa_st *mapa, int y_delta_info,
     if ( atualiza & ATUALIZA_VIDA ) {
         snprintf(buf, 19, "Vidas: %d", lolo->vidas);
         exibe_item(buf, 1, y_inicio_info, y_delta_info, 55+2+11);
+
+        /*
+         * Pegar um coração ou um inimigo atualiza a vida, assim podemos
+         * verirficar apenas aqui
+         */
+        if ( mapa->coracoes_num == 0 && mapa->inimigos_num == 0 ) {
+            #if DEBUG
+                debug_message("O bau foi aberto");
+            #endif
+
+            atualiza_grid_mapa(mapa, mapa->bau, BAU_ABERTO);
+            exibe_caractere_jogo(BAU_ABERTO, (mapa->bau).y, (mapa->bau).x);
+        }
     }
     if ( atualiza & ATUALIZA_INIMIGO ) {
         snprintf(buf, 19, "inimigos: %d", mapa->inimigos_num);
@@ -133,7 +146,7 @@ void formata_delta_tempo(char *buf, int size, int time)
 
 int processa_mapa(mapa_st *mapa)
 {
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Processando nivel");
     #endif
 
@@ -169,7 +182,7 @@ int processa_mapa(mapa_st *mapa)
 
         /* Não foi possível alocar espaço para os inimigos */
         if ( ret ) {
-            #ifdef DEBUG
+            #if DEBUG
                 debug_message("Nao foi possivel alocar espaco para os inimigos");
             #endif
 
@@ -177,7 +190,7 @@ int processa_mapa(mapa_st *mapa)
         }
     }
 
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Nivel processado");
     #endif
 
@@ -217,7 +230,7 @@ int adiciona_inimigo(inimigo_st ***inimigos, int linha, int coluna, int inimigos
 
 int limpa_inimigos(inimigo_st ***inimigos, int inimigos_num)
 {
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Limpando todos inimigos");
     #endif
 
@@ -262,7 +275,7 @@ int limpa_inimigo_pos(inimigo_st ***inimigos, int *inimigos_num, int y, int x)
 
             /* Verifica se conseguiu diminuir a memória alocada */
             if ( inimigos_tmp == NULL && (*inimigos_num) > 0 ) {
-                #ifdef DEBUG
+                #if DEBUG
                     debug_message("Nao foi possivel diminuir o numero de "
                         "inimigos");
                 #endif
@@ -276,7 +289,7 @@ int limpa_inimigo_pos(inimigo_st ***inimigos, int *inimigos_num, int y, int x)
         }
     }
 
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Alerta: Nao foi encontrado inimigo em: (%d, %d)", y, x);
     #endif
 

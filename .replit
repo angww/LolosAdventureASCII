@@ -1,2 +1,2 @@
 language = "c"
-run = "make run"
+run = "make run CC=clang"

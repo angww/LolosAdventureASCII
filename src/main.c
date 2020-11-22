@@ -7,14 +7,14 @@
 #include "jogo.h"
 #include "cores.h"
 
-#ifdef DEBUG
+#if DEBUG
 #include "debug.h"
 #endif
 
 int main(int argc, char **argv)
 {
     /* Escreve no arquivo de DEBUG que o debug está ativado */
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Debug ativado.");
     #endif
 
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     int res = verifica_arquivos();
 
     if ( res ) {
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Encerrando o jogo por erro");
         #endif
 
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     initscr();
 
     if ( !has_colors() || !can_change_color() ) {
-        #ifdef DEBUG
+        #if DEBUG
             debug_message("Erro: O terminal nao suporta cores");
         #endif
 
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
          * Escreve no arquivo de DEBUG a opção selecionada, caso não seja
          * KEY_RESIZE
          */
-        #ifdef DEBUG
+        #if DEBUG
             if ( opcao != KEY_RESIZE ) {
               debug_message("Opcao selecionada: %d", opcao);
             }
@@ -130,7 +130,7 @@ int main(int argc, char **argv)
         }
     } while ( opcao != MENU_PRINCIPAL_SAIR );
 
-    #ifdef DEBUG
+    #if DEBUG
         debug_message("Encerrando o jogo normalmente");
     #endif
 
