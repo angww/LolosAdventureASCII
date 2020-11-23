@@ -27,18 +27,12 @@ $ git clone https://github.com/angww/LolosAdventureASCII
 $ cd LolosAdventureASCII
 ```
 
-3. Caso esteja compilando localmente, pule para a etapa 4, se não descomente a linha `# CC=clang` no arquivo `Makefile`, deixando-o assim:
-
-```cmake
-# Descomente se for usar no repl.it
-CC=clang
-```
-
-4. Utilize o make com o argumento run para compilar e já rodar o jogo
+3. Utilize o make com o argumento run para compilar e já rodar o jogo
 
 ```bash
 $ make run
 ```
+
 Pronto! Este comando irá compilar todas as dependências, criar o executável em `bin/lolosgame.out` e rodar o game.
 
 Caso seja compilado com a opção `DEBUG` habilitada, será criado o arquivo `bin/log_lolo.log` que terá informações básicas sobre o que está ocorrendo no jogo. Recomenda-se rodar o jogo com uma janela lado a lado escutando o log. Pode-se usar `tail -F bin/log_lolo.log`.

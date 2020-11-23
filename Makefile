@@ -10,8 +10,6 @@
 ##
 # Documentação oficial do make em https://www.gnu.org/software/make/manual/make.html
 
-# Descomente se for usar no repl.it
-# CC=clang
 # Flags para o compilador
 CFLAGS=-lncurses -Wall
 # Diretório onde estão os arquivos a serem compilados
