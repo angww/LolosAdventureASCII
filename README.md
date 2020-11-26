@@ -32,6 +32,7 @@ $ cd LolosAdventureASCII
 ```bash
 $ make run
 ```
+
 Pronto! Este comando irá compilar todas as dependências, criar o executável em `bin/lolosgame.out` e rodar o game.
 
 Caso seja compilado com a opção `DEBUG` habilitada, será criado o arquivo `bin/log_lolo.log` que terá informações básicas sobre o que está ocorrendo no jogo. Recomenda-se rodar o jogo com uma janela lado a lado escutando o log. Pode-se usar `tail -F bin/log_lolo.log`.
