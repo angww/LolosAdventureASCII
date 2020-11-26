@@ -1,2 +1,2 @@
 language = "c"
-run = "make run CC=clang"
+run = "stty rows 30 && make run CC=clang DEBUG="
